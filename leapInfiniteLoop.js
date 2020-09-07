@@ -24,12 +24,8 @@ Leap.loop(controllerOptions, function(frame) {
     if (y > rawYMax) {
         rawYMax = y;
     }
-    //console.log(rawXMin)
-    //console.log(rawXMin)
-    //console.log(rawYMin) // always 0
 
     y = -y + (window.innerHeight)
-    console.log(y);
     newX = (((x - rawXMin) * (window.innerWidth - 0)) / (rawXMax - rawXMin)) + 0
     newY = (((y - rawYMin) * (window.innerHeight - 0)) / (rawYMax - rawYMin)) + 0
     console.log(newY);
