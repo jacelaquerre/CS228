@@ -1,23 +1,37 @@
 var controllerOptions = {};
-var x = window.innerWidth / 2;
-var y = window.innerHeight / 2;
-var randx = 0;
-var randy = 0;
-var Hand;
+var x = 0;//window.innerWidth / 2;
+var y = 0;//window.innerHeight / 2;
+var z = 0;
+
 Leap.loop(controllerOptions, function(frame) {
-    //clear();
-    //randx = Math.floor(Math.random() * (1 - (-1) + 1) ) + (-1);
-    //randy = Math.floor(Math.random() * (1 - (-1) + 1) ) + (-1);
-    //circle(x + randx, y + randy, 50);
-    if (frame.hands.length === 1) {
-        //console.log(frame.hands[0]);
-        Hand = frame.hands[0];
-        //console.log(Hand.fingers);
-        for (var i = 0; i < Hand.fingers.length; i++) {
-            if (Hand.fingers[i].type === 1) {
-                console.log(Hand.fingers[i].tipPosition);
-            }
-        }
-    }
+    clear();
+    HandleFrame(frame)
+    circle(x, y, 50);
 }
 );
+
+function HandleFrame(frame) {
+    var hand;
+    // Check if there is one hand only
+    if (frame.hands.length === 1) {
+        hand = frame.hands[0];
+        HandleHand(hand)
+    }
+}
+
+function HandleHand(hand) {
+    var finger;
+    for (var i = 0; i < hand.fingers.length; i++) {
+        // Check if the finger is an index finger
+        finger = hand.fingers[i];
+        HandleFinger(finger)
+    }
+}
+
+function HandleFinger(finger) {
+    if (finger.type === 1) {
+        x = finger.tipPosition[0];
+        y = finger.tipPosition[1];
+        z = finger.tipPosition[2];
+    }
+}
