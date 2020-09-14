@@ -1,19 +1,20 @@
 var controllerOptions = {};
-var x = 0;
-var y = 0;
-var z = 0;
+var baseX = 0;
+var baseY = 0;
+var baseZ = 0;
 var rawXMin = 1000;
 var rawXMax = 1;
 var rawYMin = 1000;
 var rawYMax = 1;
 var newX;
 var newY;
+var tipX;
+var tipY;
+var tipZ;
 
 Leap.loop(controllerOptions, function(frame) {
         clear();
         HandleFrame(frame)
-
-
     }
 );
 
@@ -28,14 +29,13 @@ function HandleFrame(frame) {
 
 function HandleHand(hand) {
     var finger;
-    for (var i = 0; i < hand.fingers.length; i++) {
-        finger = hand.fingers[i];
-        HandleFinger(finger)
+    for(var i = 3; i >= 0; i--) {
+        for (var j = 0; j < hand.fingers.length; j++) {
+            finger = hand.fingers[j];
+            //HandleFinger(finger)
+            HandleBone(finger.bones[i]);
+        }
     }
-    //for (var i = 0; i < (hand.fingers).length; i++) {
-    //    finger = hand.fingers[i];
-    //    HandleFinger(finger)
-    //}
 }
 
 function HandleFinger(finger) {
@@ -46,20 +46,55 @@ function HandleFinger(finger) {
         //z = finger.tipPosition[2];
         bone = finger.bones[i];
         HandleBone(bone);
-        //circle(newX, newY, 50);
     }
 }
 
 function HandleBone(bone) {
-    x = bone.nextJoint[0];
-    y = bone.nextJoint[1];
-    z = bone.nextJoint[2];
+    baseX = bone.nextJoint[0];
+    baseY = bone.nextJoint[1];
+    baseZ = bone.nextJoint[2];
 
+    tipX = bone.prevJoint[0];
+    tipY = bone.prevJoint[1];
+    tipZ = bone.prevJoint[2];
+
+    [baseX,baseY] = TransformCoordinates(baseX,baseY);
+    [tipX, tipY] = TransformCoordinates(tipX, tipY);
+
+    baseY = -baseY + (window.innerHeight);
+    tipY = -tipY + (window.innerHeight);
+    //console.log(newX);
+    //console.log(newY);
+    //circle(newX, newY, 50);
+    if(bone.type === 0) {
+        stroke('rgb(220, 220, 220)');
+        strokeWeight(10);
+        line(baseX, baseY, tipX, tipY);
+    }
+    if (bone.type === 1) {
+        //stroke('rbg(192,192,192)');
+        strokeWeight(7.5);
+        line(baseX, baseY, tipX, tipY);
+    }
+    if (bone.type === 2) {
+        stroke('rgb(150, 150, 150)');
+        strokeWeight(5);
+        line(baseX, baseY, tipX, tipY);
+
+    }
+    if (bone.type === 3) {
+        stroke('rgb(70, 70, 70)');
+        strokeWeight(2.5);
+        line(baseX, baseY, tipX, tipY);
+    }
+}
+
+function TransformCoordinates(x,y) {
     if (x < rawXMin) {
         rawXMin = x;
     }
     if (x > rawXMax) {
-        rawXMin = x;
+        rawXMax = x;
     }
     if (y < rawYMin) {
         rawYMin = y;
@@ -68,10 +103,7 @@ function HandleBone(bone) {
         rawYMax = y;
     }
 
-    y = -y + (window.innerHeight)
-    newX = (((x - rawXMin) * (window.innerWidth)) / (rawXMax - rawXMin))
-    newY = (((y - rawYMin) * (window.innerHeight)) / (rawYMax - rawYMin))
-
-
-    circle(newX, newY, 50);
+    newX = (((x - rawXMin) * (window.innerWidth)) / (rawXMax - rawXMin));
+    newY = (((y - rawYMin) * (window.innerHeight)) / (rawYMax - rawYMin));
+    return [newX, newY]
 }
