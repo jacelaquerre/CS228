@@ -13,11 +13,7 @@ Leap.loop(controllerOptions, function(frame) {
         clear();
         HandleFrame(frame)
 
-        y = -y + (window.innerHeight)
-        newX = (((x - rawXMin) * (window.innerWidth)) / (rawXMax - rawXMin))
-        newY = (((y - rawYMin) * (window.innerHeight)) / (rawYMax - rawYMin))
 
-        circle(newX, newY, 50);
     }
 );
 
@@ -32,7 +28,7 @@ function HandleFrame(frame) {
 
 function HandleHand(hand) {
     var finger;
-    for (var i = 0; i < (hand.fingers).length; i++) {
+    for (var i = 0; i < hand.fingers.length; i++) {
         finger = hand.fingers[i];
         HandleFinger(finger)
     }
@@ -43,9 +39,22 @@ function HandleHand(hand) {
 }
 
 function HandleFinger(finger) {
-    x = finger.tipPosition[0];
-    y = finger.tipPosition[1];
-    z = finger.tipPosition[2];
+    var bone;
+    for (var i = 0; i < finger.bones.length; i++) {
+        //x = finger.tipPosition[0];
+        //y = finger.tipPosition[1];
+        //z = finger.tipPosition[2];
+        bone = finger.bones[i];
+        HandleBone(bone);
+        //circle(newX, newY, 50);
+    }
+}
+
+function HandleBone(bone) {
+    x = bone.nextJoint[0];
+    y = bone.nextJoint[1];
+    z = bone.nextJoint[2];
+
     if (x < rawXMin) {
         rawXMin = x;
     }
@@ -58,4 +67,11 @@ function HandleFinger(finger) {
     if (y > rawYMax) {
         rawYMax = y;
     }
+
+    y = -y + (window.innerHeight)
+    newX = (((x - rawXMin) * (window.innerWidth)) / (rawXMax - rawXMin))
+    newY = (((y - rawYMin) * (window.innerHeight)) / (rawYMax - rawYMin))
+
+
+    circle(newX, newY, 50);
 }
