@@ -53,16 +53,15 @@ function HandleBone(bone) {
     baseX = bone.nextJoint[0];
     baseY = bone.nextJoint[1];
     baseZ = bone.nextJoint[2];
+    [baseX,baseY] = TransformCoordinates(baseX,baseY);
+    baseY = -baseY + (window.innerHeight);
 
     tipX = bone.prevJoint[0];
     tipY = bone.prevJoint[1];
     tipZ = bone.prevJoint[2];
-
-    [baseX,baseY] = TransformCoordinates(baseX,baseY);
     [tipX, tipY] = TransformCoordinates(tipX, tipY);
-
-    baseY = -baseY + (window.innerHeight);
     tipY = -tipY + (window.innerHeight);
+
     //console.log(newX);
     //console.log(newY);
     //circle(newX, newY, 50);
