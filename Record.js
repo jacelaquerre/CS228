@@ -32,7 +32,7 @@ function HandleHand(hand, frame) {
     for(var i = 3; i >= 0; i--) {
         for (var j = 0; j < hand.fingers.length; j++) {
             finger = hand.fingers[j];
-            HandleBone(finger.bones[i], frame, i, j);
+            HandleBone(finger.bones[i], frame, j, i);
         }
     }
 }
@@ -41,8 +41,6 @@ function HandleBone(bone, frame, fingerIndex, boneIndex) {
     var baseX = 0;
     var baseY = 0;
     var baseZ = 0;
-    var newX;
-    var newY;
     var tipX;
     var tipY;
     var tipZ;
@@ -106,6 +104,8 @@ function HandleBone(bone, frame, fingerIndex, boneIndex) {
 }
 
 function TransformCoordinates(x,y) {
+    var newX;
+    var newY;
     if (x < rawXMin) {
         rawXMin = x;
     }
