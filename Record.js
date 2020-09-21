@@ -1,18 +1,11 @@
 var controllerOptions = {};
-var baseX = 0;
-var baseY = 0;
-var baseZ = 0;
 var rawXMin = 1000;
 var rawXMax = 1;
 var rawYMin = 1000;
 var rawYMax = 1;
-var newX;
-var newY;
-var tipX;
-var tipY;
-var tipZ;
 var previousNumHands = 0;
 var currentNumHands = 0;
+var oneFrameOfData = nj.zeros([5,4,6]);
 
 Leap.loop(controllerOptions, function(frame) {
         currentNumHands = frame.hands.length;
@@ -39,12 +32,22 @@ function HandleHand(hand, frame) {
     for(var i = 3; i >= 0; i--) {
         for (var j = 0; j < hand.fingers.length; j++) {
             finger = hand.fingers[j];
-            HandleBone(finger.bones[i], frame);
+            HandleBone(finger.bones[i], frame, i, j);
         }
     }
 }
 
-function HandleBone(bone, frame) {
+function HandleBone(bone, frame, fingerIndex, boneIndex) {
+    var baseX = 0;
+    var baseY = 0;
+    var baseZ = 0;
+    var newX;
+    var newY;
+    var tipX;
+    var tipY;
+    var tipZ;
+    var fingerSum;
+
     baseX = bone.nextJoint[0];
     baseY = bone.nextJoint[1];
     baseZ = bone.nextJoint[2];
@@ -56,6 +59,16 @@ function HandleBone(bone, frame) {
     tipZ = bone.prevJoint[2];
     [tipX, tipY] = TransformCoordinates(tipX, tipY);
     tipY = -tipY + (window.innerHeight);
+
+    fingerSum = baseX + baseY + baseZ + tipX + tipY + tipZ;
+
+    oneFrameOfData.set(fingerIndex, boneIndex, 0, tipX);
+    oneFrameOfData.set(fingerIndex, boneIndex, 1, tipY);
+    oneFrameOfData.set(fingerIndex, boneIndex, 2, tipZ);
+
+    oneFrameOfData.set(fingerIndex, boneIndex, 3, baseX);
+    oneFrameOfData.set(fingerIndex, boneIndex, 4, baseY);
+    oneFrameOfData.set(fingerIndex, boneIndex, 5, baseZ);
 
     if(bone.type === 0) {
         if (frame.hands.length === 1) {
@@ -112,5 +125,6 @@ function TransformCoordinates(x,y) {
 }
 
 function RecordData() {
+    console.log(oneFrameOfData.toString())
     background(50);
 }
