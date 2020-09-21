@@ -16,8 +16,8 @@ var currentNumHands = 0;
 
 Leap.loop(controllerOptions, function(frame) {
         currentNumHands = frame.hands.length;
-        //clear();
-        //HandleFrame(frame)
+        clear();
+        HandleFrame(frame)
 
         previousNumHands = currentNumHands;
     }
@@ -25,8 +25,8 @@ Leap.loop(controllerOptions, function(frame) {
 
 function HandleFrame(frame) {
     var hand;
-    // Check if there is one hand only
-    if (frame.hands.length === 1) {
+    // Check if there is a hand
+    if (frame.hands.length > 0) {
         hand = frame.hands[0];
         HandleHand(hand, frame)
     }
@@ -70,12 +70,12 @@ function HandleBone(bone, frame) {
         } else {
             stroke('rgb(210,0,0)');
         }
-        strokeWeight(14);
+        strokeWeight(10);
         line(baseX, baseY, tipX, tipY);
     }
     if (bone.type === 1) {
         //stroke('rbg(192,192,192)');
-        strokeWeight(10);
+        strokeWeight(7);
         line(baseX, baseY, tipX, tipY);
     }
     if (bone.type === 2) {
@@ -84,7 +84,7 @@ function HandleBone(bone, frame) {
         } else {
             stroke('rgb(150,0,0)');
         }
-        strokeWeight(7);
+        strokeWeight(5);
         line(baseX, baseY, tipX, tipY);
 
     }
@@ -94,7 +94,7 @@ function HandleBone(bone, frame) {
         } else {
             stroke('rgb(90,0,0)');
         }
-        strokeWeight(4);
+        strokeWeight(2.5);
         line(baseX, baseY, tipX, tipY);
     }
 }
