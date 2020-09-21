@@ -11,10 +11,15 @@ var newY;
 var tipX;
 var tipY;
 var tipZ;
+var previousNumHands = 0;
+var currentNumHands = 0;
 
 Leap.loop(controllerOptions, function(frame) {
-        clear();
-        HandleFrame(frame)
+        currentNumHands = frame.hands.length;
+        //clear();
+        //HandleFrame(frame)
+
+        previousNumHands = currentNumHands;
     }
 );
 
@@ -23,17 +28,17 @@ function HandleFrame(frame) {
     // Check if there is one hand only
     if (frame.hands.length === 1) {
         hand = frame.hands[0];
-        HandleHand(hand)
+        HandleHand(hand, frame)
     }
 }
 
-function HandleHand(hand) {
+function HandleHand(hand, frame) {
     var finger;
     for(var i = 3; i >= 0; i--) {
         for (var j = 0; j < hand.fingers.length; j++) {
             finger = hand.fingers[j];
             //HandleFinger(finger)
-            HandleBone(finger.bones[i]);
+            HandleBone(finger.bones[i], frame);
         }
     }
 }
@@ -46,7 +51,7 @@ function HandleFinger(finger) {
     }
 }
 
-function HandleBone(bone) {
+function HandleBone(bone, frame) {
     baseX = bone.nextJoint[0];
     baseY = bone.nextJoint[1];
     baseZ = bone.nextJoint[2];
@@ -60,24 +65,36 @@ function HandleBone(bone) {
     tipY = -tipY + (window.innerHeight);
 
     if(bone.type === 0) {
-        stroke('rgb(220, 220, 220)');
-        strokeWeight(10);
+        if (frame.hands.length === 1) {
+            stroke('rgb(0,210,0)');
+        } else {
+            stroke('rgb(210,0,0)');
+        }
+        strokeWeight(14);
         line(baseX, baseY, tipX, tipY);
     }
     if (bone.type === 1) {
         //stroke('rbg(192,192,192)');
-        strokeWeight(7.5);
+        strokeWeight(10);
         line(baseX, baseY, tipX, tipY);
     }
     if (bone.type === 2) {
-        stroke('rgb(150, 150, 150)');
-        strokeWeight(5);
+        if (frame.hands.length === 1) {
+            stroke('rgb(0,150,0)');
+        } else {
+            stroke('rgb(150,0,0)');
+        }
+        strokeWeight(7);
         line(baseX, baseY, tipX, tipY);
 
     }
     if (bone.type === 3) {
-        stroke('rgb(70, 70, 70)');
-        strokeWeight(2.5);
+        if (frame.hands.length === 1) {
+            stroke('rgb(0,90,0)');
+        } else {
+            stroke('rgb(90,0,0)');
+        }
+        strokeWeight(4);
         line(baseX, baseY, tipX, tipY);
     }
 }
