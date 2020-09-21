@@ -18,7 +18,9 @@ Leap.loop(controllerOptions, function(frame) {
         currentNumHands = frame.hands.length;
         clear();
         HandleFrame(frame)
-
+        if (currentNumHands === 1 && previousNumHands === 2) {
+            RecordData();
+        }
         previousNumHands = currentNumHands;
     }
 );
@@ -37,17 +39,8 @@ function HandleHand(hand, frame) {
     for(var i = 3; i >= 0; i--) {
         for (var j = 0; j < hand.fingers.length; j++) {
             finger = hand.fingers[j];
-            //HandleFinger(finger)
             HandleBone(finger.bones[i], frame);
         }
-    }
-}
-
-function HandleFinger(finger) {
-    var bone;
-    for (var i = 0; i < finger.bones.length; i++) {
-        bone = finger.bones[i];
-        HandleBone(bone);
     }
 }
 
@@ -116,4 +109,8 @@ function TransformCoordinates(x,y) {
     newX = (((x - rawXMin) * (window.innerWidth)) / (rawXMax - rawXMin));
     newY = (((y - rawYMin) * (window.innerHeight)) / (rawYMax - rawYMin));
     return [newX, newY]
+}
+
+function RecordData() {
+    background(50);
 }
