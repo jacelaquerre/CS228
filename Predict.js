@@ -207,8 +207,16 @@ function DrawCircles() {
         var row = irisData.pick(i);
         var x = irisData.get(i, 0);
         var y = irisData.get(i, 1);
-        //console.log(x, y);
-        // Scaling x and y by 100
-        circle((x * 100), (y * 100), 50);
+        var c = parseInt(irisData.get(i, 3));
+        if (c === 0) {
+            fill('red');
+        } else if (c === 1) {
+            fill('blue');
+        } else {
+            fill('green');
+        }
+        //console.log(x, y, c);
+        // Scaling x and y by 150
+        circle((x * 150), (y * 150), 15);
     }
 }
