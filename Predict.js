@@ -149,8 +149,8 @@ var irisData = nj.array([[5.1, 3.5, 1.4, 0.2],
     [6.2, 3.4, 5.4, 2.3],
     [5.9, 3. , 5.1, 1.8]]);
 
-var numSamples = irisData.shape[0];
-var numFeatures = irisData.shape[1]-1;
+let numSamples = irisData.shape[0];
+let numFeatures = irisData.shape[1];
 var trainingCompleted = false;
 function draw() {
     clear();
@@ -168,7 +168,11 @@ function draw() {
 function Train() {
     //console.log("I am being trained");
     for (var i = 0; i <= numSamples; i = i + 2) {
-        console.log(irisData.pick(i).toString());
+        var row = irisData.pick(i);
+        var currentFeatures = row.slice([4]);
+        var currentLabel = row.slice([-1])
+        console.log(currentFeatures.toString());
+        //console.log(row.toString());
         console.log(i);
     }
 }
