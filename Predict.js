@@ -204,7 +204,6 @@ function GotResults(err, result) {
 
 function DrawCircles() {
     for (var i = 0; i < numSamples; ++i) {
-        var row = irisData.pick(i);
         var x = irisData.get(i, 0);
         var y = irisData.get(i, 1);
         var c = parseInt(irisData.get(i, 3));
@@ -214,6 +213,17 @@ function DrawCircles() {
             fill('blue');
         } else {
             fill('green');
+        }
+        if (i % 2 === 0) {
+            stroke('black');
+        } else {
+            if (c === 0) {
+                stroke('red');
+            } else if (c === 1) {
+                stroke('blue');
+            } else {
+                stroke('green');
+            }
         }
         //console.log(x, y, c);
         // Scaling x and y by 150
