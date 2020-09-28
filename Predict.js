@@ -153,7 +153,7 @@ var irisData = nj.array([[5.1, 3.5, 1.4, 0.2],
 let numSamples = irisData.shape[0];
 let numFeatures = irisData.shape[1]-1;
 var trainingCompleted = false;
-var testingSampleIndex = 0;
+var testingSampleIndex = 1;
 var predictedClassLabels = nj.zeros([numSamples]);
 
 function draw() {
@@ -198,11 +198,12 @@ function Test() {
 function GotResults(err, result) {
     //console.log(result);
     //console.log(parseInt(result.label));
+    predictedClassLabels[testingSampleIndex] = parseInt(result.label);
+    console.log(parseInt(result.label))
     testingSampleIndex += 2;
     if (testingSampleIndex > numSamples) {
         testingSampleIndex = 1;
     }
-    predictedClassLabels[testingSampleIndex] = parseInt(result.label);
 }
 
 function DrawCircles() {
@@ -220,9 +221,9 @@ function DrawCircles() {
         if (i % 2 === 0) {
             stroke('black');
         } else {
-            if (c === 0) {
+            if (predictedClassLabels[i] === 0) {
                 stroke('red');
-            } else if (c === 1) {
+            } else if (predictedClassLabels[i] === 1) {
                 stroke('blue');
             } else {
                 stroke('green');
@@ -231,6 +232,6 @@ function DrawCircles() {
         //console.log(x, y, c);
         console.log(predictedClassLabels.toString());
         // Scaling x and y by 150
-        //circle((x * 150), (y * 150), 15);
+        circle((x * 150), (y * 150), 15);
     }
 }
