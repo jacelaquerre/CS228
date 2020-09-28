@@ -161,7 +161,7 @@ function draw() {
         trainingCompleted = true;
     }
     Test();
-
+    DrawCircles();
     //console.log(irisData.toString())
     //console.log(numSamples)
     //console.log(numFeatures)
@@ -170,7 +170,7 @@ function draw() {
 function Train() {
     for (var i = 0; i <= numSamples; i += 2) {
         var row = irisData.pick(i);
-        var currentFeatures = row.slice([3]);
+        var currentFeatures = row.slice([2]);
         var currentLabel = irisData.get(i, -1);
         knnClassifier.addExample(currentFeatures.tolist(), currentLabel);
         //console.log(currentFeatures.toString());
@@ -183,7 +183,7 @@ function Train() {
 function Test() {
     //for (var i = 1; i <= numSamples; i += 2) {
         var row = irisData.pick(testingSampleIndex);
-        var currentFeatures = row.slice([3]);
+        var currentFeatures = row.slice([2]);
         var currentLabel = irisData.get(testingSampleIndex, -1);
         var predictedLabel = knnClassifier.classify(currentFeatures.tolist(), GotResults);
         //console.log(currentFeatures.toString());
@@ -195,9 +195,20 @@ function Test() {
 
 function GotResults(err, result) {
     //console.log(result);
-    console.log(parseInt(result.label));
+    //console.log(parseInt(result.label));
     testingSampleIndex += 2;
     if (testingSampleIndex > numSamples) {
         testingSampleIndex = 1;
+    }
+}
+
+function DrawCircles() {
+    for (var i = 0; i < numSamples; ++i) {
+        var row = irisData.pick(i);
+        var x = irisData.get(i, 0);
+        var y = irisData.get(i, 1);
+        //console.log(x, y);
+        // Scaling x and y by 100
+        circle((x * 100), (y * 100), 50);
     }
 }
