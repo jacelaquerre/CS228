@@ -159,7 +159,7 @@ function draw() {
         Train();
         trainingCompleted = true;
     }
-    //Test();
+    Test();
 
     //console.log(irisData.toString())
     //console.log(numSamples)
@@ -168,18 +168,28 @@ function draw() {
 
 function Train() {
     //console.log("I am being trained");
-    for (var i = 0; i <= numSamples; i = i + 2) {
+    for (var i = 0; i <= numSamples; i += 2) {
         var row = irisData.pick(i);
         var currentFeatures = row.slice([3]);
         var currentLabel = row.slice(-1);
-        console.log(currentFeatures.toString());
-        console.log(currentLabel.toString());
-        console.log(row.toString());
-        console.log(i);
+        //console.log(currentFeatures.toString());
+        //console.log(currentLabel.toString());
+        //console.log(row.toString());
+        //console.log(i);
         knnClassifier.addExample(currentFeatures.tolist(), currentLabel);
     }
+    console.log("I am trained");
 }
 
 function Test() {
-    //console.log("I am being tested");
+    for (var i = 1; i <= numSamples; i += 2) {
+        var row = irisData.pick(i);
+        var currentFeatures = row.slice([3]);
+        var currentLabel = row.slice(-1);
+        var predictedLabel = knnClassifier.classify(currentFeatures.tolist(), GotResults);
+    }
+}
+function GotResults(err, result) {
+    //console.log(parseInt(result));
+    console.log(result);
 }
