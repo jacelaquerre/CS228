@@ -166,9 +166,13 @@ function draw() {
 }
 
 function Train() {
-    console.log("I am being trained");
+    //console.log("I am being trained");
+    for (var i = 0; i <= numSamples; i = i + 2) {
+        console.log(irisData.pick(i).toString());
+        console.log(i);
+    }
 }
 
 function Test() {
-    console.log("I am being tested");
+    //console.log("I am being tested");
 }
