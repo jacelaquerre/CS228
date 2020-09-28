@@ -172,7 +172,7 @@ function draw() {
 function Train() {
     for (var i = 0; i <= numSamples; i += 2) {
         var row = irisData.pick(i);
-        var currentFeatures = row.slice([2]);
+        var currentFeatures = row.slice([4]);
         var currentLabel = irisData.get(i, -1);
         knnClassifier.addExample(currentFeatures.tolist(), currentLabel);
         //console.log(currentFeatures.toString());
@@ -185,7 +185,7 @@ function Train() {
 function Test() {
     //for (var i = 1; i <= numSamples; i += 2) {
         var row = irisData.pick(testingSampleIndex);
-        var currentFeatures = row.slice([2]);
+        var currentFeatures = row.slice([4]);
         var currentLabel = irisData.get(testingSampleIndex, -1);
         var predictedLabel = knnClassifier.classify(currentFeatures.tolist(), GotResults);
         //console.log(currentFeatures.toString());
@@ -199,7 +199,6 @@ function GotResults(err, result) {
     //console.log(result);
     //console.log(parseInt(result.label));
     predictedClassLabels[testingSampleIndex] = parseInt(result.label);
-    console.log(parseInt(result.label))
     testingSampleIndex += 2;
     if (testingSampleIndex > numSamples) {
         testingSampleIndex = 1;
@@ -230,7 +229,7 @@ function DrawCircles() {
             }
         }
         //console.log(x, y, c);
-        console.log(predictedClassLabels.toString());
+        //console.log(predictedClassLabels.toString());
         // Scaling x and y by 150
         circle((x * 150), (y * 150), 15);
     }
