@@ -167,7 +167,6 @@ function draw() {
 }
 
 function Train() {
-    //console.log("I am being trained");
     for (var i = 0; i <= numSamples; i += 2) {
         var row = irisData.pick(i);
         var currentFeatures = row.slice([3]);
@@ -178,7 +177,6 @@ function Train() {
         //console.log(i);
         knnClassifier.addExample(currentFeatures.tolist(), currentLabel);
     }
-    console.log("I am trained");
 }
 
 function Test() {
@@ -189,7 +187,9 @@ function Test() {
         var predictedLabel = knnClassifier.classify(currentFeatures.tolist(), GotResults);
     }
 }
+
 function GotResults(err, result) {
-    //console.log(parseInt(result));
     console.log(result);
+    console.log(parseInt(result.label));
+
 }
