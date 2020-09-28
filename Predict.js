@@ -154,6 +154,8 @@ let numSamples = irisData.shape[0];
 let numFeatures = irisData.shape[1]-1;
 var trainingCompleted = false;
 var testingSampleIndex = 0;
+var predictedClassLabels = nj.zeros([numSamples]);
+
 function draw() {
     clear();
     if (!trainingCompleted) {
@@ -200,6 +202,7 @@ function GotResults(err, result) {
     if (testingSampleIndex > numSamples) {
         testingSampleIndex = 1;
     }
+    predictedClassLabels[testingSampleIndex] = parseInt(result.label);
 }
 
 function DrawCircles() {
@@ -226,7 +229,8 @@ function DrawCircles() {
             }
         }
         //console.log(x, y, c);
+        console.log(predictedClassLabels.toString());
         // Scaling x and y by 150
-        circle((x * 150), (y * 150), 15);
+        //circle((x * 150), (y * 150), 15);
     }
 }
