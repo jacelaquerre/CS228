@@ -10,9 +10,7 @@ Leap.loop(controllerOptions, function(frame) {
         currentNumHands = frame.hands.length;
         clear();
         HandleFrame(frame);
-        //if (currentNumHands === 2 && previousNumHands === 1) {
-            RecordData();
-        //}
+        RecordData();
         previousNumHands = currentNumHands;
     }
 );
@@ -38,20 +36,6 @@ function HandleHand(hand, frame, interactionBox) {
 }
 
 function HandleBone(bone, frame, fingerIndex, boneIndex, interactionBox) {
-    var baseX = 0;
-    var baseY = 0;
-    var baseZ = 0;
-    var tipX;
-    var tipY;
-    var tipZ;
-    var fingerSum;
-
-
-    //baseX = bone.nextJoint[0];
-    //baseY = bone.nextJoint[1];
-    //baseZ = bone.nextJoint[2];
-    //[baseX,baseY] = TransformCoordinates(baseX,baseY);
-    //baseY = -baseY + (window.innerHeight);
     var normalizedPrevJoint = interactionBox.normalizePoint(bone.prevJoint, true);
     var normalizedNextJoint = interactionBox.normalizePoint(bone.nextJoint, true);
     //console.log(normalizedPrevJoint);
@@ -67,26 +51,8 @@ function HandleBone(bone, frame, fingerIndex, boneIndex, interactionBox) {
     // Convert the normalized coordinates to span the canvas
     var canvasX = window.innerWidth * normalizedPrevJoint[0];
     var canvasY = window.innerHeight * (1 - normalizedPrevJoint[1]);
-
-    //console.log(canvasX);
-    //console.log(canvasY);
     var canvasPrevX = window.innerWidth * normalizedNextJoint[0];
     var canvasPrevY = window.innerHeight * (1 - normalizedNextJoint[1]);
-    //console.log(canvasX);
-    //console.log(canvasY);
-
-    //tipX = bone.prevJoint[0];
-    //tipY = bone.prevJoint[1];
-    //tipZ = bone.prevJoint[2];
-    //[tipX, tipY] = TransformCoordinates(tipX, tipY);
-    //tipY = -tipY + (window.innerHeight);
-
-
-    //fingerSum = baseX + baseY + baseZ + tipX + tipY + tipZ;
-
-
-    //oneFrameOfData.set(fingerIndex, boneIndex, 2, tipZ);
-    //oneFrameOfData.set(fingerIndex, boneIndex, 5, baseZ);
 
     if(bone.type === 0) {
         if (frame.hands.length === 1) {
