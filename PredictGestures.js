@@ -21,6 +21,9 @@ function Train() {
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 0);
         console.log(features.toString());
+        features = train1.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
     }
 }
 
@@ -38,7 +41,7 @@ function GotResults(err, result) {
     predictedClassLabels[testingSampleIndex] = parseInt(result.label);
     ++testingSampleIndex;
     if (testingSampleIndex > numSamples) {
-        testingSampleIndex = 1;
+        testingSampleIndex = 0;
     }
     console.log(parseInt(result.label));
 }
