@@ -45,28 +45,46 @@ function HandleBone(bone, frame, fingerIndex, boneIndex) {
     var tipY;
     var tipZ;
     var fingerSum;
+    var interactionBox = frame.interactionBox;
 
-    baseX = bone.nextJoint[0];
-    baseY = bone.nextJoint[1];
-    baseZ = bone.nextJoint[2];
-    [baseX,baseY] = TransformCoordinates(baseX,baseY);
-    baseY = -baseY + (window.innerHeight);
+    //baseX = bone.nextJoint[0];
+    //baseY = bone.nextJoint[1];
+    //baseZ = bone.nextJoint[2];
+    //[baseX,baseY] = TransformCoordinates(baseX,baseY);
+    //baseY = -baseY + (window.innerHeight);
+    var normalizedPrevJoint = interactionBox.normalizePoint(bone.prevJoint, true);
+    var normalizedNextJoint = interactionBox.normalizePoint(bone.nextJoint, true);
+    //console.log(normalizedPrevJoint);
+    //console.log(normalizedNextJoint);
 
-    tipX = bone.prevJoint[0];
-    tipY = bone.prevJoint[1];
-    tipZ = bone.prevJoint[2];
-    [tipX, tipY] = TransformCoordinates(tipX, tipY);
-    tipY = -tipY + (window.innerHeight);
+    oneFrameOfData.set(fingerIndex, boneIndex, 0, normalizedPrevJoint[0]);
+    oneFrameOfData.set(fingerIndex, boneIndex, 1, normalizedPrevJoint[1]);
+    oneFrameOfData.set(fingerIndex, boneIndex, 3, normalizedNextJoint[0]);
+    oneFrameOfData.set(fingerIndex, boneIndex, 4, normalizedNextJoint[1]);
 
-    fingerSum = baseX + baseY + baseZ + tipX + tipY + tipZ;
+    // Convert the normalized coordinates to span the canvas
+    var canvasX = window.innerWidth * normalizedPrevJoint[0];
+    var canvasY = window.innerHeight * (1 - normalizedPrevJoint[1]);
 
-    oneFrameOfData.set(fingerIndex, boneIndex, 0, tipX);
-    oneFrameOfData.set(fingerIndex, boneIndex, 1, tipY);
-    oneFrameOfData.set(fingerIndex, boneIndex, 2, tipZ);
+    //console.log(canvasX);
+    //console.log(canvasY);
+    var canvasPrevX = window.innerWidth * normalizedNextJoint[0];
+    var canvasPrevY = window.innerHeight * (1 - normalizedNextJoint[1]);
+    //console.log(canvasX);
+    //console.log(canvasY);
 
-    oneFrameOfData.set(fingerIndex, boneIndex, 3, baseX);
-    oneFrameOfData.set(fingerIndex, boneIndex, 4, baseY);
-    oneFrameOfData.set(fingerIndex, boneIndex, 5, baseZ);
+    //tipX = bone.prevJoint[0];
+    //tipY = bone.prevJoint[1];
+    //tipZ = bone.prevJoint[2];
+    //[tipX, tipY] = TransformCoordinates(tipX, tipY);
+    //tipY = -tipY + (window.innerHeight);
+
+
+    //fingerSum = baseX + baseY + baseZ + tipX + tipY + tipZ;
+
+
+    //oneFrameOfData.set(fingerIndex, boneIndex, 2, tipZ);
+    //oneFrameOfData.set(fingerIndex, boneIndex, 5, baseZ);
 
     if(bone.type === 0) {
         if (frame.hands.length === 1) {
@@ -75,12 +93,12 @@ function HandleBone(bone, frame, fingerIndex, boneIndex) {
             stroke('rgb(210,0,0)');
         }
         strokeWeight(10);
-        line(baseX, baseY, tipX, tipY);
+        line(canvasX, canvasY, canvasPrevX, canvasPrevY);
     }
     if (bone.type === 1) {
         //stroke('rbg(192,192,192)');
         strokeWeight(7);
-        line(baseX, baseY, tipX, tipY);
+        line(canvasX, canvasY, canvasPrevX, canvasPrevY);
     }
     if (bone.type === 2) {
         if (frame.hands.length === 1) {
@@ -89,7 +107,7 @@ function HandleBone(bone, frame, fingerIndex, boneIndex) {
             stroke('rgb(150,0,0)');
         }
         strokeWeight(5);
-        line(baseX, baseY, tipX, tipY);
+        line(canvasX, canvasY, canvasPrevX, canvasPrevY);
 
     }
     if (bone.type === 3) {
@@ -99,29 +117,8 @@ function HandleBone(bone, frame, fingerIndex, boneIndex) {
             stroke('rgb(90,0,0)');
         }
         strokeWeight(2.5);
-        line(baseX, baseY, tipX, tipY);
+        line(canvasX, canvasY, canvasPrevX, canvasPrevY);
     }
-}
-
-function TransformCoordinates(x,y) {
-    var newX;
-    var newY;
-    if (x < rawXMin) {
-        rawXMin = x;
-    }
-    if (x > rawXMax) {
-        rawXMax = x;
-    }
-    if (y < rawYMin) {
-        rawYMin = y;
-    }
-    if (y > rawYMax) {
-        rawYMax = y;
-    }
-
-    newX = (((x - rawXMin) * (window.innerWidth)) / (rawXMax - rawXMin));
-    newY = (((y - rawYMin) * (window.innerHeight)) / (rawYMax - rawYMin));
-    return [newX, newY]
 }
 
 function RecordData() {
