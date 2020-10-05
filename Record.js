@@ -1,13 +1,13 @@
 var controllerOptions = {};
 var previousNumHands = 0;
 var currentNumHands = 0;
-var oneFrameOfData = nj.zeros([5,4,6]);
-var numSamples = 0;
+var numSamples = 2;
+var framesOfData = nj.zeros([5, 4, 6, numSamples]);
 var currentSample = 0;
 
 Leap.loop(controllerOptions, function(frame) {
-        currentNumHands = frame.hands.length;
         clear();
+        currentNumHands = frame.hands.length;
         HandleFrame(frame)
         if (currentNumHands === 1 && previousNumHands === 2) {
             RecordData();
@@ -55,10 +55,10 @@ function HandleBone(bone, frame, fingerIndex, boneIndex) {
     //console.log(normalizedPrevJoint);
     //console.log(normalizedNextJoint);
 
-    oneFrameOfData.set(fingerIndex, boneIndex, 0, normalizedPrevJoint[0]);
-    oneFrameOfData.set(fingerIndex, boneIndex, 1, normalizedPrevJoint[1]);
-    oneFrameOfData.set(fingerIndex, boneIndex, 3, normalizedNextJoint[0]);
-    oneFrameOfData.set(fingerIndex, boneIndex, 4, normalizedNextJoint[1]);
+    framesOfData.set(fingerIndex, boneIndex, 0, currentSample, normalizedPrevJoint[0]);
+    framesOfData.set(fingerIndex, boneIndex, 1, currentSample, normalizedPrevJoint[1]);
+    framesOfData.set(fingerIndex, boneIndex, 3, currentSample, normalizedNextJoint[0]);
+    framesOfData.set(fingerIndex, boneIndex, 4, currentSample, normalizedNextJoint[1]);
 
     // Convert the normalized coordinates to span the canvas
     var canvasX = window.innerWidth * normalizedPrevJoint[0];
@@ -120,6 +120,6 @@ function HandleBone(bone, frame, fingerIndex, boneIndex) {
 }
 
 function RecordData() {
-    console.log(oneFrameOfData.toString())
+    console.log(framesOfData.pick(null,null,null,1).toString());
     background(50);
 }

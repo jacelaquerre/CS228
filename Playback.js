@@ -1,4 +1,4 @@
-var oneFrameOfData = nj.array([[[ 0.74122, 0.27326,       0, 0.74122, 0.27326,       0],
+var framesOfData = nj.array([[[ 0.74122, 0.27326,       0, 0.74122, 0.27326,       0],
     [ 0.74122, 0.27326,       0, 0.59963, 0.40349,       0],
     [ 0.59963, 0.40349,       0, 0.51473,   0.489,       0],
     [ 0.51473,   0.489,       0, 0.46355, 0.54457,       0]],
@@ -42,10 +42,10 @@ function draw() {
     for (var i = 0; i < 5; ++i) {
         for(var j = 0; j < 4; ++j) {
 
-            xStart = window.innerWidth * oneFrameOfData.get(i, j, 0);
-            yStart = window.innerHeight * (1 - oneFrameOfData.get(i, j, 1));
-            xEnd = window.innerWidth * oneFrameOfData.get(i, j, 3);
-            yEnd = window.innerHeight * (1 - oneFrameOfData.get(i, j, 4));
+            xStart = window.innerWidth * framesOfData.get(i, j, 0);
+            yStart = window.innerHeight * (1 - framesOfData.get(i, j, 1));
+            xEnd = window.innerWidth * framesOfData.get(i, j, 3);
+            yEnd = window.innerHeight * (1 - framesOfData.get(i, j, 4));
             //xStart = oneFrameOfData.get(i, j, 0)
             //yStart = oneFrameOfData.get(i, j, 1)
             //zStart = oneFrameOfData.get(i, j, 2)
