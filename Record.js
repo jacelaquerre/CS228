@@ -91,7 +91,7 @@ function HandleBone(bone, frame, fingerIndex, boneIndex, interactionBox) {
 
 function RecordData() {
     if (currentNumHands === 2) {
-        currentSample++;
+        ++currentSample;
     }
     if (currentSample === numSamples) {
         currentSample = 0;

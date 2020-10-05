@@ -1,8 +1,8 @@
 const knnClassifier = ml5.KNNClassifier();
-let numSamples = irisData.shape[0];
-let numFeatures = irisData.shape[1]-1;
+let numSamples = train0.shape[0];
+let numFeatures = train0.shape[1]-1;
 var trainingCompleted = false;
-var testingSampleIndex = 1;
+var testingSampleIndex = 0;
 var predictedClassLabels = nj.zeros([numSamples]);
 
 function draw() {
@@ -16,11 +16,29 @@ function draw() {
 }
 
 function Train() {
-    //knnClassifier.addExample(currentFeatures.tolist(), currentLabel);
-    console.log(train0.toString());
+    for (var i = 0; i < train0.shape[3]; ++i) {
+        var features = train0.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 0);
+        console.log(features.toString());
+    }
 }
 
 function Test() {
     //var predictedLabel = knnClassifier.classify(currentFeatures.tolist(), GotResults);
-    console.log(test.toString());
+    for (var i = 0; i < test.shape[3]; ++i) {
+        var currentTestingSample = test.pick(null, null, null, i);
+        currentTestingSample = currentTestingSample.reshape(120).tolist();
+        var predicted = knnClassifier.classify(currentTestingSample, GotResults);
+        console.log(currentTestingSample);
+    }
+}
+
+function GotResults(err, result) {
+    predictedClassLabels[testingSampleIndex] = parseInt(result.label);
+    ++testingSampleIndex;
+    if (testingSampleIndex > numSamples) {
+        testingSampleIndex = 1;
+    }
+    console.log(parseInt(result.label));
 }
