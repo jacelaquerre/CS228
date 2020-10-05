@@ -1,11 +1,9 @@
 var controllerOptions = {};
-var rawXMin = 1000;
-var rawXMax = 1;
-var rawYMin = 1000;
-var rawYMax = 1;
 var previousNumHands = 0;
 var currentNumHands = 0;
 var oneFrameOfData = nj.zeros([5,4,6]);
+var numSamples = 0;
+var currentSample = 0;
 
 Leap.loop(controllerOptions, function(frame) {
         currentNumHands = frame.hands.length;
