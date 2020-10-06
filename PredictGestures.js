@@ -20,20 +20,20 @@ function Train() {
         //console.log(train6.shape[0]-1);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 6);
-        console.log(features.toString());
+        //console.log(features.toString());
         features = train7.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 7);
+        //console.log(features.toString());
     }
 }
 
 function Test() {
-    //var predictedLabel = knnClassifier.classify(currentFeatures.tolist(), GotResults);
-    for (var i = 0; i < test.shape[3]; ++i) {
+    for (var i = 0; i < train6.shape[3]; ++i) {
         var currentTestingSample = test.pick(null, null, null, i);
         currentTestingSample = currentTestingSample.reshape(120).tolist();
-        var predicted = knnClassifier.classify(currentTestingSample, GotResults);
-        console.log(currentTestingSample);
+        knnClassifier.classify(currentTestingSample, GotResults);
+        //console.log(currentTestingSample);
     }
 }
 
