@@ -1,6 +1,5 @@
 const knnClassifier = ml5.KNNClassifier();
-let numSamples = train0.shape[0];
-let numFeatures = train0.shape[1]-1;
+let numSamples = train6.shape[0];
 var trainingCompleted = false;
 var testingSampleIndex = 0;
 var predictedClassLabels = nj.zeros([numSamples]);
@@ -16,14 +15,15 @@ function draw() {
 }
 
 function Train() {
-    for (var i = 0; i < train0.shape[3]; ++i) {
-        var features = train0.pick(null, null, null, i);
+    for (var i = 0; i < train6.shape[3]; ++i) {
+        var features = train6.pick(null, null, null, i);
+        //console.log(train6.shape[0]-1);
         features = features.reshape(120).tolist();
-        knnClassifier.addExample(features, 0);
+        knnClassifier.addExample(features, 6);
         console.log(features.toString());
-        features = train1.pick(null, null, null, i);
+        features = train7.pick(null, null, null, i);
         features = features.reshape(120).tolist();
-        knnClassifier.addExample(features, 1);
+        knnClassifier.addExample(features, 7);
     }
 }
 

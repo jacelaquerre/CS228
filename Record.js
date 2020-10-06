@@ -2,7 +2,7 @@ var controllerOptions = {};
 nj.config.printThreshold = 1000;
 var previousNumHands = 0;
 var currentNumHands = 0;
-var numSamples = 2;
+var numSamples = 100;
 var framesOfData = nj.zeros([5, 4, 6, numSamples]);
 var currentSample = 0;
 
