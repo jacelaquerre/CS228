@@ -97,6 +97,7 @@ function Test() {
     for (var i = 0; i < train6.shape[3]; ++i) {
         var currentTestingSample = oneFrameOfData.pick(null, null, null, i);
         //console.log(oneFrameOfData.toString());
+        CenterData();
         currentTestingSample = currentTestingSample.reshape(120).tolist();
         knnClassifier.classify(currentTestingSample, GotResults);
         //console.log(currentTestingSample);
@@ -104,15 +105,14 @@ function Test() {
 }
 
 function GotResults(err, result) {
-    var n, c, d = 0;
-    var m;
+    var accuracy = 6; //m
     //predictedClassLabels[testingSampleIndex] = parseInt(result.label);
     ++numPredictions;
-    n = numPredictions;
-    c = result.label
-    d = 6;
-    m = ( ((n - 1) * m) ) / n; //(c==d)
-    console.log(n, m, c);
-    //console.log(parseInt(result.label));
+    accuracy = (((numPredictions - 1) * accuracy) + (result.label == 6)) / (numPredictions * 10);
+    //console.log(numPredictions, accuracy, parseInt(result.label));
+}
+
+function CenterData() {
+    xValues = oneFrameOfData.slice([],[],[0,6,3]);
 
 }
