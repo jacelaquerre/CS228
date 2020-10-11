@@ -2,9 +2,9 @@ const knnClassifier = ml5.KNNClassifier();
 let numSamples = train6.shape[0];
 var controllerOptions = {};
 var trainingCompleted = false;
-var testingSampleIndex = 0;
-var predictedClassLabels = nj.zeros([numSamples]);
+//var predictedClassLabels = nj.zeros([numSamples]);
 var oneFrameOfData = nj.zeros([5, 4, 6]);
+var numPredictions = 0;
 
 Leap.loop(controllerOptions, function(frame) {
         clear();
@@ -104,10 +104,15 @@ function Test() {
 }
 
 function GotResults(err, result) {
-    predictedClassLabels[testingSampleIndex] = parseInt(result.label);
-    ++testingSampleIndex;
-    if (testingSampleIndex > numSamples) {
-        testingSampleIndex = 0;
-    }
-    console.log(parseInt(result.label));
+    var n, c, d = 0;
+    var m;
+    //predictedClassLabels[testingSampleIndex] = parseInt(result.label);
+    ++numPredictions;
+    n = numPredictions;
+    c = result.label
+    d = 6;
+    m = ( ((n - 1) * m) ) / n; //(c==d)
+    console.log(n, m, c);
+    //console.log(parseInt(result.label));
+
 }
