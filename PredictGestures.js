@@ -5,6 +5,7 @@ var trainingCompleted = false;
 //var predictedClassLabels = nj.zeros([numSamples]);
 var oneFrameOfData = nj.zeros([5, 4, 6]);
 var numPredictions = 0;
+var accuracy = 0;
 
 Leap.loop(controllerOptions, function(frame) {
         clear();
@@ -105,14 +106,17 @@ function Test() {
 }
 
 function GotResults(err, result) {
-    var accuracy = 6; //m
     //predictedClassLabels[testingSampleIndex] = parseInt(result.label);
     ++numPredictions;
-    accuracy = (((numPredictions - 1) * accuracy) + (result.label == 6)) / (numPredictions * 10);
+    accuracy = (((numPredictions - 1) * accuracy) + (result.label == 6)) / numPredictions;
     //console.log(numPredictions, accuracy, parseInt(result.label));
 }
 
 function CenterData() {
     xValues = oneFrameOfData.slice([],[],[0,6,3]);
+    //console.log(xValues.shape);
+    let currentMean = xValues.mean();
+    console.log(currentMean);
+    var horizontalShift = 0.5 - currentMean;
 
 }
