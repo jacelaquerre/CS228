@@ -82,13 +82,47 @@ function HandleBone(bone, frame, fingerIndex, boneIndex, interactionBox) {
 function Train() {
     console.log("I am being trained!")
     for (var i = 0; i < train6.shape[3]; ++i) {
-        var features = train6.pick(null, null, null, i);
+        //// 0
+        var features = train0.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 0);
+        //// 1
+        features = train1.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
+        //// 2
+        features = train2.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 2);
+        //// 3
+        features = train3.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 3);
+        //// 4
+        features = train4.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 4);
+        //// 5
+        features = train5.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 5);
+        //// 6
+        features = train6.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 6);
-        //console.log(features);
+        //// 7
         features = train7.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 7);
+        //// 8
+        features = train8.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 8);
+        //// 9
+        features = train9.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 9);
+
         //console.log(features);
     }
     console.log("Training completed!")
@@ -108,7 +142,7 @@ function Test() {
 function GotResults(err, result) {
     //predictedClassLabels[testingSampleIndex] = parseInt(result.label);
     ++numPredictions;
-    accuracy = (((numPredictions - 1) * accuracy) + (result.label == 7)) / numPredictions;
+    accuracy = (((numPredictions - 1) * accuracy) + (result.label == 9)) / numPredictions;
     console.log(numPredictions, accuracy, parseInt(result.label));
 }
 
