@@ -30,8 +30,8 @@ function HandleFrame(frame) {
 
 function HandleHand(hand, frame, interactionBox) {
     var finger;
-    for(var i = 3; i >= 0; i--) {
-        for (var j = 0; j < hand.fingers.length; j++) {
+    for(var i = 3; i >= 0; --i) {
+        for (var j = 0; j < hand.fingers.length; ++j) {
             finger = hand.fingers[j];
             HandleBone(finger.bones[i], frame, j, i, interactionBox);
         }
@@ -118,5 +118,11 @@ function CenterData() {
     let currentMean = xValues.mean();
     console.log(currentMean);
     var horizontalShift = 0.5 - currentMean;
-
+    for (var i = 0; i < oneFrameOfData.shape[3]; ++i) {
+        for (var j = 0; i < oneFrameOfData.shape[3]; ++j) {
+            var currentX = oneFrameOfData.get(currentRow, currentColumn, 0);
+            var shiftedX = currentX + horizontalShift;
+            oneFrameOfData.set(currentRow, currentColumn, 0, shiftedX);
+        }
+    }
 }
