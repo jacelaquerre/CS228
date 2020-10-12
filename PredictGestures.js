@@ -108,8 +108,8 @@ function Test() {
 function GotResults(err, result) {
     //predictedClassLabels[testingSampleIndex] = parseInt(result.label);
     ++numPredictions;
-    accuracy = (((numPredictions - 1) * accuracy) + (result.label == 6)) / numPredictions;
-    //console.log(numPredictions, accuracy, parseInt(result.label));
+    accuracy = (((numPredictions - 1) * accuracy) + (result.label == 7)) / numPredictions;
+    console.log(numPredictions, accuracy, parseInt(result.label));
 }
 
 function CenterData() {
