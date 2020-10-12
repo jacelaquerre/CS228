@@ -115,14 +115,19 @@ function GotResults(err, result) {
 function CenterData() {
     xValues = oneFrameOfData.slice([],[],[0,6,3]);
     //console.log(xValues.shape);
-    let currentMean = xValues.mean();
+    var currentMean = xValues.mean();
     console.log(currentMean);
     var horizontalShift = 0.5 - currentMean;
-    for (var i = 0; i < oneFrameOfData.shape[3]; ++i) {
-        for (var j = 0; i < oneFrameOfData.shape[3]; ++j) {
+    for (var currentRow = 0; currentRow < 5; ++currentRow) {
+        for (var currentColumn = 0; currentColumn < 4; ++currentColumn) {
             var currentX = oneFrameOfData.get(currentRow, currentColumn, 0);
             var shiftedX = currentX + horizontalShift;
             oneFrameOfData.set(currentRow, currentColumn, 0, shiftedX);
+            currentX = oneFrameOfData.get(currentRow, currentColumn, 3);
+            shiftedX = currentX + horizontalShift;
+            oneFrameOfData.set(currentRow, currentColumn, 3, shiftedX);
         }
     }
+    currentMean = xValues.mean();
+    console.log(currentMean);
 }
