@@ -113,10 +113,16 @@ function GotResults(err, result) {
 }
 
 function CenterData() {
-    xValues = oneFrameOfData.slice([],[],[0,6,3]);
+    CenterXData();
+    CenterYData();
+    CenterZData();
+}
+
+function CenterXData() {
+    var xValues = oneFrameOfData.slice([],[],[0,6,3]);
     //console.log(xValues.shape);
     var currentMean = xValues.mean();
-    console.log(currentMean);
+    //console.log(currentMean);
     var horizontalShift = 0.5 - currentMean;
     for (var currentRow = 0; currentRow < 5; ++currentRow) {
         for (var currentColumn = 0; currentColumn < 4; ++currentColumn) {
@@ -128,6 +134,47 @@ function CenterData() {
             oneFrameOfData.set(currentRow, currentColumn, 3, shiftedX);
         }
     }
-    currentMean = xValues.mean();
-    console.log(currentMean);
+    var newXValues = oneFrameOfData.slice([],[],[0,6,3]);
+    var currentMean2 = newXValues.mean();
+    //console.log(currentMean2);
+}
+
+function CenterYData() {
+    var xValues = oneFrameOfData.slice([],[],[1,6,3]);
+    var currentMean = xValues.mean();
+    //console.log(currentMean);
+    var horizontalShift = 0.5 - currentMean;
+    for (var currentRow = 0; currentRow < 5; ++currentRow) {
+        for (var currentColumn = 0; currentColumn < 4; ++currentColumn) {
+            var currentX = oneFrameOfData.get(currentRow, currentColumn, 1);
+            var shiftedX = currentX + horizontalShift;
+            oneFrameOfData.set(currentRow, currentColumn, 1, shiftedX);
+            currentX = oneFrameOfData.get(currentRow, currentColumn, 4);
+            shiftedX = currentX + horizontalShift;
+            oneFrameOfData.set(currentRow, currentColumn, 4, shiftedX);
+        }
+    }
+    var newXValues = oneFrameOfData.slice([],[],[0,6,3]);
+    var currentMean2 = newXValues.mean();
+    //console.log(currentMean2);
+}
+
+function CenterZData() {
+    var xValues = oneFrameOfData.slice([],[],[2,6,3]);
+    var currentMean = xValues.mean();
+    //console.log(currentMean);
+    var horizontalShift = 0.5 - currentMean;
+    for (var currentRow = 0; currentRow < 5; ++currentRow) {
+        for (var currentColumn = 0; currentColumn < 4; ++currentColumn) {
+            var currentX = oneFrameOfData.get(currentRow, currentColumn, 2);
+            var shiftedX = currentX + horizontalShift;
+            oneFrameOfData.set(currentRow, currentColumn, 2, shiftedX);
+            currentX = oneFrameOfData.get(currentRow, currentColumn, 5);
+            shiftedX = currentX + horizontalShift;
+            oneFrameOfData.set(currentRow, currentColumn, 5, shiftedX);
+        }
+    }
+    var newXValues = oneFrameOfData.slice([],[],[0,6,3]);
+    var currentMean2 = newXValues.mean();
+    //console.log(currentMean2);
 }
