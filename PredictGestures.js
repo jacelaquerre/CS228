@@ -19,10 +19,38 @@ Leap.loop(controllerOptions, function(frame) {
         } else if (programState === 1) {
             HandleState1(frame);
         } else {
-            HandleState2();
+            HandleState2(frame);
         }
     }
 );
+
+function HandleState0(frame) {
+    TrainKNNIfNotDoneYet();
+    DrawImageToHelpUserPutTheirHandOverTheDevice();
+}
+
+function HandleState1(frame) {
+    HandleFrame(frame);
+    if (HandIsTooFarToTheLeft()) {
+        DrawArrowRight()
+    } else if (HandIsTooFarToTheRight()) {
+        DrawArrowLeft();
+    } else if (HandIsTooFarUp()) {
+        DrawArrowDown();
+    } else if (HandIsTooFarDown()) {
+        DrawArrowUp();
+    } else if (HandIsTooForward()) {
+        DrawArrowBack();
+    } else if (HandIsTooBackward()) {
+        DrawArrowForward();
+    }
+    //Test();
+}
+
+function HandleState2(frame) {
+    HandleFrame(frame);
+    //Test();
+}
 
 function DetermineState(frame) {
     if (frame.hands.length <= 0) {
@@ -35,21 +63,70 @@ function DetermineState(frame) {
 }
 
 function HandIsUncentered() {
-
+    return HandIsTooFarToTheLeft() || HandIsTooFarToTheRight() || HandIsTooFarUp()
+        || HandIsTooFarDown() || HandIsTooForward() || HandIsTooBackward();
 }
 
-function HandleState0(frame) {
-    TrainKNNIfNotDoneYet();
-    DrawImageToHelpUserPutTheirHandOverTheDevice();
+function HandIsTooFarToTheRight() {
+    var xValues = oneFrameOfData.slice([],[],[0,6,3]);
+    var currentMean = xValues.mean();
+    return currentMean > 0.75;
 }
 
-function HandleState1(frame) {
-    HandleFrame(frame);
-    //Test();
+function HandIsTooFarToTheLeft() {
+    var xValues = oneFrameOfData.slice([],[],[0,6,3]);
+    var currentMean = xValues.mean();
+    return currentMean < 0.25;
 }
 
-function HandleState2() {
+function HandIsTooFarUp() {
+    var yValues = oneFrameOfData.slice([],[],[1,6,3]);
+    var currentMean = yValues.mean();
+    return currentMean > 0.75;
+}
 
+function HandIsTooFarDown() {
+    var yValues = oneFrameOfData.slice([],[],[1,6,3]);
+    var currentMean = yValues.mean();
+    return currentMean < 0.25;
+}
+
+function HandIsTooForward() {
+    var zValues = oneFrameOfData.slice([],[],[2,6,3]);
+    var currentMean = zValues.mean();
+    console.log(currentMean);
+    return currentMean < 0.25;
+}
+
+function HandIsTooBackward() {
+    var zValues = oneFrameOfData.slice([],[],[2,6,3]);
+    var currentMean = zValues.mean();
+    console.log(currentMean);
+    return currentMean < 0.75;
+}
+
+function DrawArrowRight() {
+    image(img_right, window.innerWidth/2, 0, 600, 400);
+}
+
+function DrawArrowLeft() {
+    image(img_left, window.innerWidth/2, 0, 600, 400);
+}
+
+function DrawArrowUp() {
+    image(img_up, window.innerWidth/2, 0, 600, 400);
+}
+
+function DrawArrowDown() {
+    image(img_down, window.innerWidth/2, 0, 600, 400);
+}
+
+function DrawArrowBack() {
+    image(img_back, window.innerWidth/2, 0, 600, 400);
+}
+
+function DrawArrowForward() {
+    image(img_forward, window.innerWidth/2, 0, 600, 400);
 }
 
 function TrainKNNIfNotDoneYet() {
@@ -59,7 +136,7 @@ function TrainKNNIfNotDoneYet() {
     }
 }
 function DrawImageToHelpUserPutTheirHandOverTheDevice() {
-    image(img, 0, 0, 500, 400);
+    image(img, 0, 0, 600, 400);
 }
 
 function HandleFrame(frame) {
@@ -300,7 +377,7 @@ function Test() {
     currentTestingSample = currentTestingSample.reshape(120).tolist();
     //console.log(currentTestingSample)
     knnClassifier.classify(currentTestingSample, GotResults);
-    //console.log(currentTestingSample);
+    console.log(currentTestingSample);
 }
 
 function GotResults(err, result) {
@@ -308,7 +385,7 @@ function GotResults(err, result) {
     //++numPredictions;
     //accuracy = (((numPredictions - 1) * accuracy) + (result.label == 9)) / numPredictions;
     //console.log(numPredictions, accuracy, parseInt(result.label));
-    console.log(result.label);
+    //console.log(result.label);
 }
 
 function CenterData() {
@@ -339,41 +416,41 @@ function CenterXData() {
 }
 
 function CenterYData() {
-    var xValues = oneFrameOfData.slice([],[],[1,6,3]);
-    var currentMean = xValues.mean();
+    var yValues = oneFrameOfData.slice([],[],[1,6,3]);
+    var currentMean = yValues.mean();
     //console.log(currentMean);
     var horizontalShift = 0.5 - currentMean;
     for (var currentRow = 0; currentRow < 5; ++currentRow) {
         for (var currentColumn = 0; currentColumn < 4; ++currentColumn) {
-            var currentX = oneFrameOfData.get(currentRow, currentColumn, 1);
-            var shiftedX = currentX + horizontalShift;
-            oneFrameOfData.set(currentRow, currentColumn, 1, shiftedX);
-            currentX = oneFrameOfData.get(currentRow, currentColumn, 4);
-            shiftedX = currentX + horizontalShift;
-            oneFrameOfData.set(currentRow, currentColumn, 4, shiftedX);
+            var currentY = oneFrameOfData.get(currentRow, currentColumn, 1);
+            var shiftedY = currentY + horizontalShift;
+            oneFrameOfData.set(currentRow, currentColumn, 1, shiftedY);
+            currentY = oneFrameOfData.get(currentRow, currentColumn, 4);
+            shiftedY = currentY + horizontalShift;
+            oneFrameOfData.set(currentRow, currentColumn, 4, shiftedY);
         }
     }
-    var newXValues = oneFrameOfData.slice([],[],[0,6,3]);
-    var currentMean2 = newXValues.mean();
+    var newYValues = oneFrameOfData.slice([],[],[1,6,3]);
+    var currentMean2 = newYValues.mean();
     //console.log(currentMean2);
 }
 
 function CenterZData() {
-    var xValues = oneFrameOfData.slice([],[],[2,6,3]);
-    var currentMean = xValues.mean();
+    var zValues = oneFrameOfData.slice([],[],[2,6,3]);
+    var currentMean = zValues.mean();
     //console.log(currentMean);
     var horizontalShift = 0.5 - currentMean;
     for (var currentRow = 0; currentRow < 5; ++currentRow) {
         for (var currentColumn = 0; currentColumn < 4; ++currentColumn) {
-            var currentX = oneFrameOfData.get(currentRow, currentColumn, 2);
-            var shiftedX = currentX + horizontalShift;
-            oneFrameOfData.set(currentRow, currentColumn, 2, shiftedX);
-            currentX = oneFrameOfData.get(currentRow, currentColumn, 5);
-            shiftedX = currentX + horizontalShift;
-            oneFrameOfData.set(currentRow, currentColumn, 5, shiftedX);
+            var currentZ = oneFrameOfData.get(currentRow, currentColumn, 2);
+            var shiftedZ = currentZ + horizontalShift;
+            oneFrameOfData.set(currentRow, currentColumn, 2, shiftedZ);
+            currentZ = oneFrameOfData.get(currentRow, currentColumn, 5);
+            shiftedZ = currentZ + horizontalShift;
+            oneFrameOfData.set(currentRow, currentColumn, 5, shiftedZ);
         }
     }
-    var newXValues = oneFrameOfData.slice([],[],[0,6,3]);
-    var currentMean2 = newXValues.mean();
+    var newZValues = oneFrameOfData.slice([],[],[2,6,3]);
+    var currentMean2 = newZValues.mean();
     //console.log(currentMean2);
 }

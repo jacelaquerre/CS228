@@ -7,7 +7,7 @@ let img_back;
 let img_forward;
 function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
-    img = loadImage('https://i.imgur.com/XD76H4N.jpeg');
+    img = loadImage('https://i.postimg.cc/wTgX5Zsx/Zero.jpg');
     img_right = loadImage('https://i.postimg.cc/4ySr1B05/Arrow-Right.jpg');
     img_left = loadImage('https://i.postimg.cc/tTrfXB9j/Arrow-Left.jpg');
     img_up = loadImage('https://i.postimg.cc/yNsrcMdK/ArrowUp.jpg');
