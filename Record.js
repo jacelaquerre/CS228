@@ -43,10 +43,10 @@ function HandleBone(bone, frame, fingerIndex, boneIndex, interactionBox) {
 
     framesOfData.set(fingerIndex, boneIndex, 0, currentSample, normalizedPrevJoint[0]);
     framesOfData.set(fingerIndex, boneIndex, 1, currentSample, normalizedPrevJoint[1]);
-    framesOfData.set(fingerIndex, boneIndex, 2, currentSample, 1);
+    framesOfData.set(fingerIndex, boneIndex, 2, currentSample, normalizedPrevJoint[2]);
     framesOfData.set(fingerIndex, boneIndex, 3, currentSample, normalizedNextJoint[0]);
     framesOfData.set(fingerIndex, boneIndex, 4, currentSample, normalizedNextJoint[1]);
-    framesOfData.set(fingerIndex, boneIndex, 5, currentSample, 1);
+    framesOfData.set(fingerIndex, boneIndex, 5, currentSample, normalizedNextJoint[2]);
 
     // Convert the normalized coordinates to span the canvas
     var canvasX = window.innerWidth * normalizedPrevJoint[0];

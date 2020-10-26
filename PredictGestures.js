@@ -1,5 +1,5 @@
 const knnClassifier = ml5.KNNClassifier();
-let numSamples = train6Laquerre.shape[0];
+let numSamples = train6Bongard.shape[0];
 var controllerOptions = {};
 var trainingCompleted = false;
 //var predictedClassLabels = nj.zeros([numSamples]);
@@ -94,15 +94,13 @@ function HandIsTooFarDown() {
 function HandIsTooForward() {
     var zValues = oneFrameOfData.slice([],[],[2,6,3]);
     var currentMean = zValues.mean();
-    console.log(currentMean);
     return currentMean < 0.25;
 }
 
 function HandIsTooBackward() {
     var zValues = oneFrameOfData.slice([],[],[2,6,3]);
     var currentMean = zValues.mean();
-    console.log(currentMean);
-    return currentMean < 0.75;
+    return currentMean > 0.75;
 }
 
 function DrawArrowRight() {
@@ -165,10 +163,10 @@ function HandleBone(bone, frame, fingerIndex, boneIndex, interactionBox) {
 
     oneFrameOfData.set(fingerIndex, boneIndex, 0, normalizedPrevJoint[0]);
     oneFrameOfData.set(fingerIndex, boneIndex, 1, normalizedPrevJoint[1]);
-    oneFrameOfData.set(fingerIndex, boneIndex, 2, 1);
+    oneFrameOfData.set(fingerIndex, boneIndex, 2, normalizedPrevJoint[2]);
     oneFrameOfData.set(fingerIndex, boneIndex, 3, normalizedNextJoint[0]);
     oneFrameOfData.set(fingerIndex, boneIndex, 4, normalizedNextJoint[1]);
-    oneFrameOfData.set(fingerIndex, boneIndex, 5, 1);
+    oneFrameOfData.set(fingerIndex, boneIndex, 5, normalizedNextJoint[2]);
 
     // Convert the normalized coordinates to span the canvas
     var canvasX = (window.innerWidth / 2) * normalizedPrevJoint[0];
@@ -202,166 +200,135 @@ function HandleBone(bone, frame, fingerIndex, boneIndex, interactionBox) {
 
 function Train() {
     console.log("I am being trained!")
-    for (var i = 0; i < train6Laquerre.shape[3]; ++i) {
+    for (var i = 0; i < train6Bongard.shape[3]; ++i) {
         //// 0
-        // var features = train0Bongard.pick(null, null, null, i);
-        // features = features.reshape(120).tolist();
-        // knnClassifier.addExample(features, 0);
-        // features = train0Davis.pick(null, null, null, i);
-        // features = features.reshape(120).tolist();
-        // knnClassifier.addExample(features, 0);
-        // features = train0.pick(null, null, null, i);
-        // features = features.reshape(120).tolist();
-        // knnClassifier.addExample(features, 0);
         var features = train0Allison.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 0);
         //// 1
         features = train1Bongard.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 1);
-
-        // features = train1Wolley.pick(null, null, null, i);
-        // features = features.reshape(120).tolist();
-        // knnClassifier.addExample(features, 1);
-        // features = train1.pick(null, null, null, i);
-        // features = features.reshape(120).tolist();
-        // knnClassifier.addExample(features, 1);
-        // features = train1b.pick(null, null, null, i);
-        // features = features.reshape(120).tolist();
-        // knnClassifier.addExample(features, 1);
-        // features = train1c.pick(null, null, null, i);
-        // features = features.reshape(120).tolist();
-        // knnClassifier.addExample(features, 1);
-
-        // features = train1d.pick(null, null, null, i);
-        // features = features.reshape(120).tolist();
-        // knnClassifier.addExample(features, 1);
-        // features = train1e.pick(null, null, null, i);
-        // features = features.reshape(120).tolist();
-        // knnClassifier.addExample(features, 1);
-        // features = train1f.pick(null, null, null, i);
-        // features = features.reshape(120).tolist();
-        // knnClassifier.addExample(features, 1);
+        features = train1.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
+        features = train1b.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
+        features = train1c.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
+        features = train1d.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
+        features = train1e.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
+        features = train1f.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
+        features = train1g.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
+        features = train1h.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
+        features = train1McLaughlin.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 1);
         //// 2
         features = train2.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 2);
         features = train2b.pick(null, null, null, i);
-        CenterData();
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 2);
+        features = train2Bongard.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 2);
         //// 3
         features = train3.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 3);
         features = train3b.pick(null, null, null, i);
-        CenterData();
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 3);
+        features = train3c.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 3);
+        features = train3Bongard.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 3);
         //// 4
         features = train4.pick(null, null, null, i);
-        CenterData();
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 4);
+        features = train4b.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 4);
+        features = train4c.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 4);
+        features = train4Bongard.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 4);
         //// 5
         features = train5.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 5);
         features = train5b.pick(null, null, null, i);
-        CenterData();
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 5);
+        features = train5c.pick(null, null, null, i);
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 5);
+        features = train5Bongard.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 5);
         //// 6
-        features = train6Laquerre.pick(null, null, null, i);
-        CenterData();
+        features = train6.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 6);
-        features = train6Laquerre2.pick(null, null, null, i);
-        CenterData();
+        features = train6b.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 6);
-        features = train6c.pick(null, null, null, i);
-        CenterData();
-        features = features.reshape(120).tolist();
-        knnClassifier.addExample(features, 6);
-        features = train6d.pick(null, null, null, i);
-        CenterData();
-        features = features.reshape(120).tolist();
-        knnClassifier.addExample(features, 6);
-        features = train6e.pick(null, null, null, i);
-        CenterData();
-        features = features.reshape(120).tolist();
-        knnClassifier.addExample(features, 6);
-        features = train6f.pick(null, null, null, i);
-        CenterData();
-        features = features.reshape(120).tolist();
-        knnClassifier.addExample(features, 6);
-        features = train6g.pick(null, null, null, i);
-        CenterData();
+        features = train6Bongard.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 6);
         //// 7
-        features = train7Laquerre.pick(null, null, null, i);
-        CenterData();
+        features = train7.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 7);
         features = train7b.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 7);
         features = train7c.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 7);
-        features = train7d.pick(null, null, null, i);
-        CenterData();
-        features = features.reshape(120).tolist();
-        knnClassifier.addExample(features, 7);
-        features = train7e.pick(null, null, null, i);
-        CenterData();
-        features = features.reshape(120).tolist();
-        knnClassifier.addExample(features, 7);
-        features = train7f.pick(null, null, null, i);
-        features = features.reshape(120).tolist();
-        knnClassifier.addExample(features, 7);
-        features = train7g.pick(null, null, null, i);
-        CenterData();
-        features = features.reshape(120).tolist();
-        knnClassifier.addExample(features, 7);
-        features = train7h.pick(null, null, null, i);
-        CenterData();
+        features = train7Bongard.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 7);
         //// 8
         features = train8Goldman.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 8);
         features = train8Bonguard.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 8);
         features = train8.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 8);
         features = train8b.pick(null, null, null, i);
-        CenterData();
+        features = features.reshape(120).tolist();
+        knnClassifier.addExample(features, 8);
+        features = train8c.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 8);
         //// 9
         features = train9Bongard.pick(null, null, null, i);
-        CenterData();
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 9);
-        features = train9Goldman.pick(null, null, null, i);
-        CenterData();
+        features = train9.pick(null, null, null, i);
         features = features.reshape(120).tolist();
         knnClassifier.addExample(features, 9);
 
@@ -377,7 +344,7 @@ function Test() {
     currentTestingSample = currentTestingSample.reshape(120).tolist();
     //console.log(currentTestingSample)
     knnClassifier.classify(currentTestingSample, GotResults);
-    console.log(currentTestingSample);
+    //console.log(currentTestingSample);
 }
 
 function GotResults(err, result) {
@@ -385,7 +352,7 @@ function GotResults(err, result) {
     //++numPredictions;
     //accuracy = (((numPredictions - 1) * accuracy) + (result.label == 9)) / numPredictions;
     //console.log(numPredictions, accuracy, parseInt(result.label));
-    //console.log(result.label);
+    console.log(result.label);
 }
 
 function CenterData() {

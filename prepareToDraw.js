@@ -12,6 +12,6 @@ function setup() {
     img_left = loadImage('https://i.postimg.cc/tTrfXB9j/Arrow-Left.jpg');
     img_up = loadImage('https://i.postimg.cc/yNsrcMdK/ArrowUp.jpg');
     img_down = loadImage('https://i.postimg.cc/y6b5tpfh/Arrow-Down.jpg');
-    img_back = loadImage('https://i.postimg.cc/B6vYw2Hw/Arrow-Backward.jpg');
+    img_back = loadImage('https://i.postimg.cc/Zn7kJg98/Arrow-Backward.jpg');
     img_forward = loadImage('https://i.postimg.cc/SRBgs55w/Arrow-Forward.jpg');
 }
