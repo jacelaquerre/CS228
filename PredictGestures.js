@@ -7,9 +7,9 @@ var oneFrameOfData = nj.zeros([5, 4, 6]);
 var numPredictions = 0;
 var accuracy = 0;
 //0 = the program is waiting to see the user’s hand.
-//1 = at least one of the user’s hand is present.
+//1 = the user’s hand is present but not centered.
+//2 = the user’s hand is present and centered.
 var programState = 0;
-var img;
 
 Leap.loop(controllerOptions, function(frame) {
         clear();
@@ -18,16 +18,24 @@ Leap.loop(controllerOptions, function(frame) {
             HandleState0(frame);
         } else if (programState === 1) {
             HandleState1(frame);
+        } else {
+            HandleState2();
         }
     }
 );
 
 function DetermineState(frame) {
-    if (frame.hands.length > 0) {
+    if (frame.hands.length <= 0) {
+        programState = 0;
+    } else if (HandIsUncentered()) {
         programState = 1;
     } else {
-        programState = 0;
+        programState = 2;
     }
+}
+
+function HandIsUncentered() {
+
 }
 
 function HandleState0(frame) {
@@ -37,8 +45,11 @@ function HandleState0(frame) {
 
 function HandleState1(frame) {
     HandleFrame(frame);
-    img = loadImage('https://imgur.com/a/4tL9YlT')
     //Test();
+}
+
+function HandleState2() {
+
 }
 
 function TrainKNNIfNotDoneYet() {
@@ -48,7 +59,7 @@ function TrainKNNIfNotDoneYet() {
     }
 }
 function DrawImageToHelpUserPutTheirHandOverTheDevice() {
-    image(img, 0, 0);
+    image(img, 0, 0, 500, 400);
 }
 
 function HandleFrame(frame) {
