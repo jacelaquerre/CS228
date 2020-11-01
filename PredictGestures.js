@@ -19,7 +19,7 @@ function SignIn() {
     } else {
         CreateSignInItem(username,list);
     }
-    console.log(list);
+    console.log(list.innerHTML);
     return false;
 }
 
