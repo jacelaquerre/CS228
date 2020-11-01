@@ -13,7 +13,25 @@ var programState = 0;
 
 function SignIn() {
     var username = document.getElementById('username').value;
-    console.log(username);
+    var list = document.getElementById('users');
+    if (IsNewUser(username, list)) {
+        var item = document.createElement('li');
+        item.innerHTML = String(username);
+        list.appendChild(item);
+    }
+    console.log(list);
+    return false;
+}
+
+function IsNewUser(username, list) {
+    var usernameFound = false
+    var users = list.children;
+    for(var i = 0; i < users.length; ++i) {
+        if (users[i].innerHTML === username) {
+            usernameFound = true;
+        }
+    }
+    return (usernameFound === false);
 }
 
 Leap.loop(controllerOptions, function(frame) {
