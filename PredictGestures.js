@@ -11,6 +11,11 @@ var accuracy = 0;
 //2 = the user’s hand is present and centered.
 var programState = 0;
 
+function SignIn() {
+    var username = document.getElementById('username').value;
+    console.log(username);
+}
+
 Leap.loop(controllerOptions, function(frame) {
         clear();
         DetermineState(frame);
