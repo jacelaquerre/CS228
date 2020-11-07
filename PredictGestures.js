@@ -10,6 +10,7 @@ var accuracy = 0;
 //1 = the user’s hand is present but not centered.
 //2 = the user’s hand is present and centered.
 var programState = 0;
+var timeSinceLastDigitChange = new Date();
 
 function SignIn() {
     var username = document.getElementById('username').value;
@@ -89,7 +90,44 @@ function HandleState1(frame) {
 
 function HandleState2(frame) {
     HandleFrame(frame);
+    DetermineWhetherToSwitchDigits()
+    DrawLowerRightPanel();
     //Test();
+}
+
+function DrawLowerRightPanel() {
+    if (digitToShow === 0) {
+        image(img_0, window.innerWidth/2, window.innerHeight/2, 200, 325);
+    } else {
+        image(img_1, window.innerWidth/2, window.innerHeight/2, 200, 325);
+    }
+}
+
+function DetermineWhetherToSwitchDigits() {
+    if (TimeToSwitchDigits()) {
+        SwitchDigits();
+    }
+}
+
+function TimeToSwitchDigits() {
+    let currentTime = new Date();
+    let timeInBetweenInMilliseconds = currentTime - timeSinceLastDigitChange;
+    let timeInBetweenInSeconds = timeInBetweenInMilliseconds / 1000;
+    console.log(timeInBetweenInSeconds);
+    if (timeInBetweenInSeconds >= 1) {
+        timeSinceLastDigitChange = new Date();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function SwitchDigits() {
+    if (digitToShow === 0) {
+        digitToShow = 1;
+    } else {
+        digitToShow = 0;
+    }
 }
 
 function DetermineState(frame) {
