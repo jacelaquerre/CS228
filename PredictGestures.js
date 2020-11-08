@@ -85,21 +85,20 @@ function HandleState1(frame) {
     } else if (HandIsTooBackward()) {
         DrawArrowForward();
     }
-    //Test();
 }
 
 function HandleState2(frame) {
     HandleFrame(frame);
     DetermineWhetherToSwitchDigits()
     DrawLowerRightPanel();
-    //Test();
+    Test();
 }
 
 function DrawLowerRightPanel() {
-    if (digitToShow === 0) {
-        image(img_0, window.innerWidth/2, window.innerHeight/2, 200, 325);
+    if (digitToShow === 4) {
+        image(img_4, window.innerWidth/2, window.innerHeight/2, 200, 325);
     } else {
-        image(img_1, window.innerWidth/2, window.innerHeight/2, 200, 325);
+        image(img_5, window.innerWidth/2, window.innerHeight/2, 200, 325);
     }
 }
 
@@ -113,8 +112,7 @@ function TimeToSwitchDigits() {
     let currentTime = new Date();
     let timeInBetweenInMilliseconds = currentTime - timeSinceLastDigitChange;
     let timeInBetweenInSeconds = timeInBetweenInMilliseconds / 1000;
-    console.log(timeInBetweenInSeconds);
-    if (timeInBetweenInSeconds >= 1) {
+    if (timeInBetweenInSeconds >= 6) {
         timeSinceLastDigitChange = new Date();
         return true;
     } else {
@@ -123,11 +121,12 @@ function TimeToSwitchDigits() {
 }
 
 function SwitchDigits() {
-    if (digitToShow === 0) {
-        digitToShow = 1;
+    if (digitToShow === 4) {
+        digitToShow = 5;
     } else {
-        digitToShow = 0;
+        digitToShow = 4;
     }
+    numPredictions = 0;
 }
 
 function DetermineState(frame) {
@@ -207,7 +206,7 @@ function DrawArrowForward() {
 
 function TrainKNNIfNotDoneYet() {
     if (!trainingCompleted) {
-        //Train();
+        Train();
         trainingCompleted = true;
     }
 }
@@ -427,10 +426,9 @@ function Test() {
 
 function GotResults(err, result) {
     //predictedClassLabels[testingSampleIndex] = parseInt(result.label);
-    //++numPredictions;
-    //accuracy = (((numPredictions - 1) * accuracy) + (result.label == 9)) / numPredictions;
-    //console.log(numPredictions, accuracy, parseInt(result.label));
-    console.log(result.label);
+    ++numPredictions;
+    accuracy = (((numPredictions - 1) * accuracy) + (result.label == digitToShow)) / numPredictions;
+    console.log(numPredictions, accuracy, parseInt(result.label));
 }
 
 function CenterData() {
