@@ -251,25 +251,27 @@ function HandleBone(bone, frame, fingerIndex, boneIndex, interactionBox) {
     var canvasPrevX = (window.innerWidth / 2) * normalizedNextJoint[0];
     var canvasPrevY = (window.innerHeight / 2) * (1 - normalizedNextJoint[1]);
 
+    var green = accuracy * 255;
+    var red = (1 - accuracy) * 255;
     if (bone.type === 0) {
-        stroke('rgb(220, 220, 220)');
-        strokeWeight(10);
+        stroke(red, green, 0);
+        strokeWeight(20);
         line(canvasX, canvasY, canvasPrevX, canvasPrevY);
     }
     if (bone.type === 1) {
         //stroke('rbg(192,192,192)');
-        strokeWeight(7.5);
+        strokeWeight(15);
         line(canvasX, canvasY, canvasPrevX, canvasPrevY);
     }
     if (bone.type === 2) {
-        stroke('rgb(150, 150, 150)');
-        strokeWeight(5);
+        stroke(red, green, 0);
+        strokeWeight(10);
         line(canvasX, canvasY, canvasPrevX, canvasPrevY);
 
     }
     if (bone.type === 3) {
-        stroke('rgb(70, 70, 70)');
-        strokeWeight(2.5);
+        stroke(red, green, 0);
+        strokeWeight(5);
         line(canvasX, canvasY, canvasPrevX, canvasPrevY);
     }
 }
@@ -428,7 +430,7 @@ function GotResults(err, result) {
     //predictedClassLabels[testingSampleIndex] = parseInt(result.label);
     ++numPredictions;
     accuracy = (((numPredictions - 1) * accuracy) + (result.label == digitToShow)) / numPredictions;
-    console.log(numPredictions, accuracy, parseInt(result.label));
+    //console.log(numPredictions, accuracy, parseInt(result.label));
 }
 
 function CenterData() {
