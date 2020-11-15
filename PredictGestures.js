@@ -2,7 +2,6 @@ const knnClassifier = ml5.KNNClassifier();
 let numSamples = train6Bongard.shape[0];
 var controllerOptions = {};
 var trainingCompleted = false;
-//var predictedClassLabels = nj.zeros([numSamples]);
 var oneFrameOfData = nj.zeros([5, 4, 6]);
 var numPredictions = 0;
 var accuracy = 0;
@@ -11,6 +10,9 @@ var accuracy = 0;
 //2 = the user’s hand is present and centered.
 var programState = 0;
 var timeSinceLastDigitChange = new Date();
+// We are creating a dictionary that will keep track of users accuracy one ach digit
+var dict = {};
+const PROFICIENT_ACCURACY = .85;
 
 function SignIn() {
     var username = document.getElementById('username').value;
@@ -95,10 +97,67 @@ function HandleState2(frame) {
 }
 
 function DrawLowerRightPanel() {
+
     if (digitToShow === 4) {
-        image(img_4, window.innerWidth/2, window.innerHeight/2, 200, 325);
-    } else {
-        image(img_5, window.innerWidth/2, window.innerHeight/2, 200, 325);
+        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+            image(img_4, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        } else {
+            image(num_4, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        }
+    } else if (digitToShow === 5) {
+        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+            image(img_5, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        } else {
+            image(num_5, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        }
+    } else if (digitToShow === 6) {
+        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+            image(img_6, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        } else {
+            image(num_6, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        }
+    } else if (digitToShow === 7) {
+        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+            image(img_7, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        } else {
+            image(num_7, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        }
+    } else if (digitToShow === 8) {
+        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+            image(img_8, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        } else {
+            image(num_8, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        }
+    } else if (digitToShow === 9) {
+        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+            image(img_9, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        } else {
+            image(num_9, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        }
+    } else if (digitToShow === 0) {
+        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+            image(img_0, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        } else {
+            image(num_0, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        }
+    } else if (digitToShow === 1) {
+        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+            image(img_1, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        } else {
+            image(num_1, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        }
+    } else if (digitToShow === 2) {
+        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+            image(img_2, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        } else {
+            image(num_2, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        }
+    } else if (digitToShow === 3) {
+        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+            image(img_3, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        } else {
+            image(num_3, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        }
     }
 }
 
@@ -123,10 +182,17 @@ function TimeToSwitchDigits() {
 function SwitchDigits() {
     if (digitToShow === 4) {
         digitToShow = 5;
-    } else {
+        //if (dict[String(digitToShow)] > PROFICIENT_ACCURACY) {
+        //    addDigit();
+        //}
+    } else if (digitToShow === 5) {
         digitToShow = 4;
     }
     numPredictions = 0;
+}
+
+function addDigit() {
+
 }
 
 function DetermineState(frame) {
@@ -427,10 +493,10 @@ function Test() {
 }
 
 function GotResults(err, result) {
-    //predictedClassLabels[testingSampleIndex] = parseInt(result.label);
     ++numPredictions;
     accuracy = (((numPredictions - 1) * accuracy) + (result.label == digitToShow)) / numPredictions;
     //console.log(numPredictions, accuracy, parseInt(result.label));
+    dict[String(digitToShow)] = accuracy;
 }
 
 function CenterData() {
