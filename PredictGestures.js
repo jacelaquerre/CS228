@@ -10,14 +10,35 @@ var accuracy = 0;
 //2 = the user’s hand is present and centered.
 var programState = 0;
 var timeSinceLastDigitChange = new Date();
-// We are creating a dictionary that will keep track of users accuracy one ach digit
-var dict = {};
-const PROFICIENT_ACCURACY = .85;
+// We are creating a dictionary that will keep track of users accuracy for each digit
+// and the number of predictions for each digit
+var dict = { "0" : 0 ,
+    "0num" : 0 ,
+    "1" : 0 ,
+    "1num" : 0 ,
+    "2" : 0 ,
+    "2num" : 0 ,
+    "3" : 0 ,
+    "3num" : 0 ,
+    "4" : 0 ,
+    "4num" : 0 ,
+    "5" : 0 ,
+    "5num" : 0 ,
+    "6" : 0 ,
+    "6num" : 0 ,
+    "7" : 0 ,
+    "7num" : 0 ,
+    "8" : 0 ,
+    "8num" : 0 ,
+    "9" : 0 ,
+    "9num" : 0 ,
+};
+const PROFICIENT_ACCURACY = .70;
 
 function SignIn() {
     var username = document.getElementById('username').value;
     var list = document.getElementById('users');
-    if (IsNewUser(username, list)) {
+    if (IsNewUser(username, list))  {
         CreateNewUser(username,list);
     } else {
         CreateSignInItem(username,list);
@@ -493,9 +514,13 @@ function Test() {
 }
 
 function GotResults(err, result) {
-    ++numPredictions;
+    let numPredForNum = (String(digitToShow) + "num");
+    // Get total numPredictions and accuracy for that digit
+    numPredictions = dict[numPredForNum] + 1;
+    accuracy = dict[String(digitToShow)];
     accuracy = (((numPredictions - 1) * accuracy) + (result.label == digitToShow)) / numPredictions;
-    //console.log(numPredictions, accuracy, parseInt(result.label));
+    // Set new values for tht num in global dictionary
+    dict[numPredForNum] = numPredictions;
     dict[String(digitToShow)] = accuracy;
 }
 
