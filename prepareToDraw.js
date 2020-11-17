@@ -25,6 +25,7 @@ let img_up;
 let img_down;
 let img_back;
 let img_forward;
+// starting digit
 var digitToShow = 4;
 function setup() {
     createCanvas(window.innerWidth, window.innerHeight);

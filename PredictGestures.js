@@ -5,6 +5,7 @@ var trainingCompleted = false;
 var oneFrameOfData = nj.zeros([5, 4, 6]);
 var numPredictions = 0;
 var accuracy = 0;
+var worstAccuracy = 0;
 //0 = the program is waiting to see the user’s hand.
 //1 = the user’s hand is present but not centered.
 //2 = the user’s hand is present and centered.
@@ -12,28 +13,31 @@ var programState = 0;
 var timeSinceLastDigitChange = new Date();
 // We are creating a dictionary that will keep track of users accuracy for each digit
 // and the number of predictions for each digit
-var dict = { "0" : 0 ,
-    "0num" : 0 ,
+var acc_dict = { "0" : 0 ,
     "1" : 0 ,
-    "1num" : 0 ,
     "2" : 0 ,
-    "2num" : 0 ,
     "3" : 0 ,
-    "3num" : 0 ,
     "4" : 0 ,
-    "4num" : 0 ,
     "5" : 0 ,
-    "5num" : 0 ,
     "6" : 0 ,
-    "6num" : 0 ,
     "7" : 0 ,
-    "7num" : 0 ,
     "8" : 0 ,
-    "8num" : 0 ,
-    "9" : 0 ,
-    "9num" : 0 ,
+    "9" : 0
+};
+
+var num_prediction_dict = { "0" : 0 ,
+    "1" : 0 ,
+    "2" : 0 ,
+    "3" : 0 ,
+    "4" : 0 ,
+    "5" : 0 ,
+    "6" : 0 ,
+    "7" : 0 ,
+    "8" : 0 ,
+    "9" : 0
 };
 const PROFICIENT_ACCURACY = .70;
+const SHORTER_TIME_ACCURACY = .90;
 
 function SignIn() {
     var username = document.getElementById('username').value;
@@ -118,63 +122,63 @@ function HandleState2(frame) {
 }
 
 function DrawLowerRightPanel() {
-
+    var digitAccuracy = acc_dict[String(digitToShow)]
     if (digitToShow === 4) {
-        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+        if (digitAccuracy < PROFICIENT_ACCURACY) {
             image(img_4, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         } else {
             image(num_4, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         }
     } else if (digitToShow === 5) {
-        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+        if (digitAccuracy < PROFICIENT_ACCURACY) {
             image(img_5, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         } else {
             image(num_5, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         }
     } else if (digitToShow === 6) {
-        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+        if (digitAccuracy < PROFICIENT_ACCURACY) {
             image(img_6, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         } else {
             image(num_6, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         }
     } else if (digitToShow === 7) {
-        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+        if (digitAccuracy < PROFICIENT_ACCURACY) {
             image(img_7, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         } else {
             image(num_7, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         }
     } else if (digitToShow === 8) {
-        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+        if (digitAccuracy < PROFICIENT_ACCURACY) {
             image(img_8, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         } else {
             image(num_8, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         }
     } else if (digitToShow === 9) {
-        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+        if (digitAccuracy < PROFICIENT_ACCURACY) {
             image(img_9, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         } else {
             image(num_9, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         }
     } else if (digitToShow === 0) {
-        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+        if (digitAccuracy < PROFICIENT_ACCURACY) {
             image(img_0, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         } else {
             image(num_0, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         }
     } else if (digitToShow === 1) {
-        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+        if (digitAccuracy < PROFICIENT_ACCURACY) {
             image(img_1, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         } else {
             image(num_1, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         }
     } else if (digitToShow === 2) {
-        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+        if (digitAccuracy < PROFICIENT_ACCURACY) {
             image(img_2, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         } else {
             image(num_2, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         }
     } else if (digitToShow === 3) {
-        if (dict[String(digitToShow)] < PROFICIENT_ACCURACY) {
+        if (digitAccuracy < PROFICIENT_ACCURACY) {
             image(img_3, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
         } else {
             image(num_3, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
@@ -189,31 +193,43 @@ function DetermineWhetherToSwitchDigits() {
 }
 
 function TimeToSwitchDigits() {
+    const SHORT_TIME = 3;
+    const LONG_TIME = 6;
     let currentTime = new Date();
     let timeInBetweenInMilliseconds = currentTime - timeSinceLastDigitChange;
     let timeInBetweenInSeconds = timeInBetweenInMilliseconds / 1000;
-    if (timeInBetweenInSeconds >= 6) {
-        timeSinceLastDigitChange = new Date();
-        return true;
+    if (acc_dict[String(digitToShow)] >= SHORTER_TIME_ACCURACY) {
+        if (timeInBetweenInSeconds >= SHORT_TIME) {
+            timeSinceLastDigitChange = new Date();
+            return true;
+        } else {
+            return false;
+        }
     } else {
-        return false;
+        if (timeInBetweenInSeconds >= LONG_TIME) {
+            timeSinceLastDigitChange = new Date();
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
 function SwitchDigits() {
-    if (digitToShow === 4) {
-        digitToShow = 5;
-        //if (dict[String(digitToShow)] > PROFICIENT_ACCURACY) {
-        //    addDigit();
-        //}
-    } else if (digitToShow === 5) {
-        digitToShow = 4;
+    // The next number to do will be the one with the worst accuracy
+    var accuracyArray = [];
+    var ct = 0;
+    for (var key in acc_dict) {
+        accuracyArray[ct] = acc_dict[key];
+        ++ct;
     }
-    numPredictions = 0;
-}
-
-function addDigit() {
-
+    worstAccuracy = Math.min.apply(Math, accuracyArray);
+    for (key in acc_dict) {
+        if (acc_dict[key] <= worstAccuracy) {
+            digitToShow = parseInt(key);
+            break;
+        }
+    }
 }
 
 function DetermineState(frame) {
@@ -514,14 +530,13 @@ function Test() {
 }
 
 function GotResults(err, result) {
-    let numPredForNum = (String(digitToShow) + "num");
     // Get total numPredictions and accuracy for that digit
-    numPredictions = dict[numPredForNum] + 1;
-    accuracy = dict[String(digitToShow)];
+    numPredictions = num_prediction_dict[String(digitToShow)] + 1;
+    accuracy = acc_dict[String(digitToShow)];
     accuracy = (((numPredictions - 1) * accuracy) + (result.label == digitToShow)) / numPredictions;
     // Set new values for tht num in global dictionary
-    dict[numPredForNum] = numPredictions;
-    dict[String(digitToShow)] = accuracy;
+    num_prediction_dict[String(digitToShow)] = numPredictions;
+    acc_dict[String(digitToShow)] = accuracy;
 }
 
 function CenterData() {
