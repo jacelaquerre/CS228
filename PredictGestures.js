@@ -38,6 +38,10 @@ var num_prediction_dict = { "0" : 0 ,
 };
 const PROFICIENT_ACCURACY = .70;
 const SHORTER_TIME_ACCURACY = .90;
+const MATH_PROBLEMS = true;
+var mathHTMLCreated = false;
+const LEN_MATH_PROBLEM_LISTS = 2;
+var randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
 
 function SignIn() {
     var username = document.getElementById('username').value;
@@ -45,7 +49,7 @@ function SignIn() {
     if (IsNewUser(username, list))  {
         CreateNewUser(username,list);
     } else {
-        CreateSignInItem(username,list);
+        CreateSignInItem(username);
     }
     console.log(list.innerHTML);
     return false;
@@ -73,9 +77,9 @@ function CreateNewUser(username,list) {
     list.appendChild(item);
 }
 
-function CreateSignInItem(username, list) {
-    var ID = String(username) + "_signins"
-    var listItem = document.getElementById(ID);
+function CreateSignInItem(username) {
+    let ID = String(username) + "_signins"
+    let listItem = document.getElementById(ID);
     listItem.innerHTML = parseInt(listItem.innerHTML) + 1;
 }
 
@@ -83,7 +87,7 @@ Leap.loop(controllerOptions, function(frame) {
         clear();
         DetermineState(frame);
         if (programState === 0) {
-            HandleState0(frame);
+            HandleState0();
         } else if (programState === 1) {
             HandleState1(frame);
         } else {
@@ -92,7 +96,7 @@ Leap.loop(controllerOptions, function(frame) {
     }
 );
 
-function HandleState0(frame) {
+function HandleState0() {
     TrainKNNIfNotDoneYet();
     DrawImageToHelpUserPutTheirHandOverTheDevice();
 }
@@ -121,74 +125,142 @@ function HandleState2(frame) {
     Test();
 }
 
+function createMathHTML() {
+    var sheet = document.createElement('style')
+    sheet.innerHTML = '.container {\n' +
+             '        position: relative;\n' +
+             '    }';
+    document.body.appendChild(sheet);
+    sheet = document.createElement('style')
+    sheet.innerHTML = '.bottomright {\n' +
+             '        position: absolute;\n' +
+             '        bottom: '+ String(window.innerHeight / 2) + ';\n' +
+             '        left: '+ String(window.innerWidth / 2) + ';\n' +
+             '        font-size: 100px;\n' +
+             '    }';
+    document.body.appendChild(sheet);
+    var container = document.createElement('div');
+    container.classList.add("container");
+    var mathProb = document.createElement('div');
+    mathProb.classList.add("bottomright");
+    mathProb.id = "math";
+    container.appendChild(mathProb);
+    document.body.appendChild(container);
+}
+
 function DrawLowerRightPanel() {
-    var digitAccuracy = acc_dict[String(digitToShow)]
-    if (digitToShow === 4) {
-        if (digitAccuracy < PROFICIENT_ACCURACY) {
-            image(img_4, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        } else {
-            image(num_4, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+    var digitAccuracy = acc_dict[String(digitToShow)];
+    var mathProblem = "";
+    if (MATH_PROBLEMS) {
+        if (!mathHTMLCreated) {
+            createMathHTML();
+            mathHTMLCreated = true;
         }
-    } else if (digitToShow === 5) {
-        if (digitAccuracy < PROFICIENT_ACCURACY) {
-            image(img_5, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        } else {
-            image(num_5, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        if (digitToShow === 4) {
+            let mathEquations4 = ["2 x 2 = ?", "12 / 3 = ?"];
+            mathProblem = mathEquations4[randomMathProblemIdx];
+        } else if (digitToShow === 5) {
+            let mathEquations5 = ["3 + 2 = ?", "12 - 7 = ?"];
+            mathProblem = mathEquations5[randomMathProblemIdx];
+        } else if (digitToShow === 6) {
+            let mathEquations6 = ["6 x a = 36, a = ?", "36 / 6 = ?"];
+            mathProblem = mathEquations6[randomMathProblemIdx];
+        } else if (digitToShow === 7) {
+            let mathEquations7 = ["(7 + 21) / 4 = ?", "8 - 1 - 0 = ?"];
+            mathProblem = mathEquations7[randomMathProblemIdx];
+        } else if (digitToShow === 8) {
+            let mathEquations8 = ["8 x a = 64, a = ?", "5 + 3 = ?"];
+            mathProblem = mathEquations8[randomMathProblemIdx];
+        } else if (digitToShow === 9) {
+            let mathEquations9 = ["3 x 3 = ?", "36 - 27 = ?"];
+            mathProblem = mathEquations9[randomMathProblemIdx];
+        } else if (digitToShow === 0) {
+            let mathEquations0 = ["2 x 0 = ?", "(3 + 28) x 0 = ?"];
+            mathProblem = mathEquations0[randomMathProblemIdx];
+        } else if (digitToShow === 1) {
+            let mathEquations1 = ["56 / 56 = ?", "(3 + 3) - 5 = ?"];
+            mathProblem = mathEquations1[randomMathProblemIdx];
+        } else if (digitToShow === 2) {
+            let mathEquations2 = ["12 x a = 24, a = ?", "64 / 32 = ?"];
+            mathProblem = mathEquations2[randomMathProblemIdx];
+        } else if (digitToShow === 3) {
+            let mathEquations3 = ["8 x a = 24, a = ?", "9 / 3 = ?"];
+            mathProblem = mathEquations3[randomMathProblemIdx];
         }
-    } else if (digitToShow === 6) {
-        if (digitAccuracy < PROFICIENT_ACCURACY) {
-            image(img_6, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        } else {
-            image(num_6, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        }
-    } else if (digitToShow === 7) {
-        if (digitAccuracy < PROFICIENT_ACCURACY) {
-            image(img_7, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        } else {
-            image(num_7, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        }
-    } else if (digitToShow === 8) {
-        if (digitAccuracy < PROFICIENT_ACCURACY) {
-            image(img_8, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        } else {
-            image(num_8, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        }
-    } else if (digitToShow === 9) {
-        if (digitAccuracy < PROFICIENT_ACCURACY) {
-            image(img_9, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        } else {
-            image(num_9, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        }
-    } else if (digitToShow === 0) {
-        if (digitAccuracy < PROFICIENT_ACCURACY) {
-            image(img_0, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        } else {
-            image(num_0, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        }
-    } else if (digitToShow === 1) {
-        if (digitAccuracy < PROFICIENT_ACCURACY) {
-            image(img_1, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        } else {
-            image(num_1, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        }
-    } else if (digitToShow === 2) {
-        if (digitAccuracy < PROFICIENT_ACCURACY) {
-            image(img_2, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        } else {
-            image(num_2, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        }
-    } else if (digitToShow === 3) {
-        if (digitAccuracy < PROFICIENT_ACCURACY) {
-            image(img_3, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
-        } else {
-            image(num_3, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+        // Add math equation to element
+        document.getElementById("math").innerHTML = mathProblem;
+    } else {
+        if (digitToShow === 4) {
+            if (digitAccuracy < PROFICIENT_ACCURACY) {
+                image(img_4, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            } else {
+                image(num_4, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            }
+        } else if (digitToShow === 5) {
+            if (digitAccuracy < PROFICIENT_ACCURACY) {
+                image(img_5, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            } else {
+                image(num_5, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            }
+        } else if (digitToShow === 6) {
+            if (digitAccuracy < PROFICIENT_ACCURACY) {
+                image(img_6, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            } else {
+                image(num_6, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            }
+        } else if (digitToShow === 7) {
+            if (digitAccuracy < PROFICIENT_ACCURACY) {
+                image(img_7, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            } else {
+                image(num_7, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            }
+        } else if (digitToShow === 8) {
+            if (digitAccuracy < PROFICIENT_ACCURACY) {
+                image(img_8, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            } else {
+                image(num_8, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            }
+        } else if (digitToShow === 9) {
+            if (digitAccuracy < PROFICIENT_ACCURACY) {
+                image(img_9, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            } else {
+                image(num_9, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            }
+        } else if (digitToShow === 0) {
+            if (digitAccuracy < PROFICIENT_ACCURACY) {
+                image(img_0, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            } else {
+                image(num_0, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            }
+        } else if (digitToShow === 1) {
+            if (digitAccuracy < PROFICIENT_ACCURACY) {
+                image(img_1, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            } else {
+                image(num_1, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            }
+        } else if (digitToShow === 2) {
+            if (digitAccuracy < PROFICIENT_ACCURACY) {
+                image(img_2, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            } else {
+                image(num_2, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            }
+        } else if (digitToShow === 3) {
+            if (digitAccuracy < PROFICIENT_ACCURACY) {
+                image(img_3, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            } else {
+                image(num_3, window.innerWidth / 2, window.innerHeight / 2, 200, 325);
+            }
         }
     }
 }
 
 function DetermineWhetherToSwitchDigits() {
-    if (TimeToSwitchDigits()) {
+    if (MATH_PROBLEMS) {
         SwitchDigits();
+    } else {
+        if (TimeToSwitchDigits()) {
+            SwitchDigits();
+        }
     }
 }
 
@@ -379,7 +451,6 @@ function HandleBone(bone, frame, fingerIndex, boneIndex, interactionBox) {
     }
 }
 
-
 function Train() {
     console.log("I am being trained!")
     for (var i = 0; i < train6Bongard.shape[3]; ++i) {
@@ -524,19 +595,23 @@ function Test() {
     //console.log(oneFrameOfData.toString());
     CenterData();
     currentTestingSample = currentTestingSample.reshape(120).tolist();
-    //console.log(currentTestingSample)
     knnClassifier.classify(currentTestingSample, GotResults);
-    //console.log(currentTestingSample);
 }
 
 function GotResults(err, result) {
-    // Get total numPredictions and accuracy for that digit
+    // Get total numPredictions and accuracy for that digits
     numPredictions = num_prediction_dict[String(digitToShow)] + 1;
     accuracy = acc_dict[String(digitToShow)];
     accuracy = (((numPredictions - 1) * accuracy) + (result.label == digitToShow)) / numPredictions;
     // Set new values for tht num in global dictionary
     num_prediction_dict[String(digitToShow)] = numPredictions;
     acc_dict[String(digitToShow)] = accuracy;
+    if (MATH_PROBLEMS) {
+        if (result.label == digitToShow) {
+            TimeToSwitchDigits();
+            randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
+        }
+    }
 }
 
 function CenterData() {
@@ -547,9 +622,7 @@ function CenterData() {
 
 function CenterXData() {
     var xValues = oneFrameOfData.slice([],[],[0,6,3]);
-    //console.log(xValues.shape);
     var currentMean = xValues.mean();
-    //console.log(currentMean);
     var horizontalShift = 0.5 - currentMean;
     for (var currentRow = 0; currentRow < 5; ++currentRow) {
         for (var currentColumn = 0; currentColumn < 4; ++currentColumn) {
@@ -561,15 +634,11 @@ function CenterXData() {
             oneFrameOfData.set(currentRow, currentColumn, 3, shiftedX);
         }
     }
-    var newXValues = oneFrameOfData.slice([],[],[0,6,3]);
-    var currentMean2 = newXValues.mean();
-    //console.log(currentMean2);
 }
 
 function CenterYData() {
     var yValues = oneFrameOfData.slice([],[],[1,6,3]);
     var currentMean = yValues.mean();
-    //console.log(currentMean);
     var horizontalShift = 0.5 - currentMean;
     for (var currentRow = 0; currentRow < 5; ++currentRow) {
         for (var currentColumn = 0; currentColumn < 4; ++currentColumn) {
@@ -581,15 +650,11 @@ function CenterYData() {
             oneFrameOfData.set(currentRow, currentColumn, 4, shiftedY);
         }
     }
-    var newYValues = oneFrameOfData.slice([],[],[1,6,3]);
-    var currentMean2 = newYValues.mean();
-    //console.log(currentMean2);
 }
 
 function CenterZData() {
     var zValues = oneFrameOfData.slice([],[],[2,6,3]);
     var currentMean = zValues.mean();
-    //console.log(currentMean);
     var horizontalShift = 0.5 - currentMean;
     for (var currentRow = 0; currentRow < 5; ++currentRow) {
         for (var currentColumn = 0; currentColumn < 4; ++currentColumn) {
@@ -601,7 +666,4 @@ function CenterZData() {
             oneFrameOfData.set(currentRow, currentColumn, 5, shiftedZ);
         }
     }
-    var newZValues = oneFrameOfData.slice([],[],[2,6,3]);
-    var currentMean2 = newZValues.mean();
-    //console.log(currentMean2);
 }
