@@ -14,42 +14,43 @@ var timeSinceLastDigitChange = new Date();
 // We are creating a dictionary that will keep track of users accuracy for each digit
 // and the number of predictions for each digit
 var acc_dict = { "0" : 0 ,
-    "1" : 0 ,
+    //"1" : 0 ,
     "2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
-    "6" : 0 ,
-    "7" : 0 ,
-    "8" : 0 ,
-    "9" : 0
+    //"6" : 0 ,
+    //"7" : 0 ,
+    //"8" : 0 ,
+    //"9" : 0
 };
 
 var num_prediction_dict = { "0" : 0 ,
-    "1" : 0 ,
+    //"1" : 0 ,
     "2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
-    "6" : 0 ,
-    "7" : 0 ,
-    "8" : 0 ,
-    "9" : 0
+    //"6" : 0 ,
+    //"7" : 0 ,
+    //"8" : 0 ,
+    //"9" : 0
 };
 const PROFICIENT_ACCURACY = .70;
 const SHORTER_TIME_ACCURACY = .90;
-const MATH_PROBLEMS = true;
+const MATH_PROBLEMS = false;
 var mathHTMLCreated = false;
 const LEN_MATH_PROBLEM_LISTS = 2;
 var randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
+let username = "";
 
 function SignIn() {
-    var username = document.getElementById('username').value;
+    username = document.getElementById('username').value;
     var list = document.getElementById('users');
     if (IsNewUser(username, list))  {
         CreateNewUser(username,list);
     } else {
-        CreateSignInItem(username);
+        CreateSignInItem(username, list);
     }
     console.log(list.innerHTML);
     return false;
@@ -66,7 +67,7 @@ function IsNewUser(username, list) {
     return (usernameFound === false);
 }
 
-function CreateNewUser(username,list) {
+function CreateNewUser(username, list) {
     var item = document.createElement('li');
     item.id = String(username) + "_name";
     item.innerHTML = String(username);
@@ -75,12 +76,60 @@ function CreateNewUser(username,list) {
     item.id = String(username) + "_signins";
     item.innerHTML = 1;
     list.appendChild(item);
+    // Create accuracy for numbers
+    for (var i = 0; i < 10; ++i) {
+        item = document.createElement('li');
+        item.id = String(username) + String(i) + "_accuracy_curr";
+        item.innerHTML = 0;
+        list.appendChild(item);
+    }
 }
 
-function CreateSignInItem(username) {
+function CreateSignInItem(username, list) {
     let ID = String(username) + "_signins"
     let listItem = document.getElementById(ID);
+    if (parseInt(listItem.innerHTML) === 1) {
+        for (var i = 0; i < 10; ++i) {
+            var item = document.createElement('li');
+            item.id = String(username) + String(i) + "_accuracy_last";
+            let ID = String(username) + String(i) + "_accuracy_curr"
+            let listItem = document.getElementById(ID);
+            item.innerHTML = listItem.getAttribute('innerHTML');
+            list.appendChild(item);
+        }
+    } else {
+        for (var i = 0; i < 10; ++i) {
+            var ID2 = String(username) + String(i) + "_accuracy_curr"
+            let listItem2 = document.getElementById(ID2);
+            let ID3 = String(username) + String(i) + "_accuracy_last"
+            let listItem3 = document.getElementById(ID3);
+            listItem3.innerHTML = listItem2.getAttribute('innerHTML');
+        }
+    }
     listItem.innerHTML = parseInt(listItem.innerHTML) + 1;
+}
+
+function UpdateAccuracy(accuracy) {
+    let ID = String(username) + String(digitToShow) + "_accuracy_curr"
+    let listItem = document.getElementById(ID);
+    listItem.innerHTML = String(accuracy);
+}
+
+function GotResults(err, result) {
+    // Get total numPredictions and accuracy for that digits
+    numPredictions = num_prediction_dict[String(digitToShow)] + 1;
+    accuracy = acc_dict[String(digitToShow)];
+    accuracy = (((numPredictions - 1) * accuracy) + (result.label == digitToShow)) / numPredictions;
+    // Set new values for tht num in global dictionary
+    num_prediction_dict[String(digitToShow)] = numPredictions;
+    acc_dict[String(digitToShow)] = accuracy;
+    if (MATH_PROBLEMS) {
+        if (result.label == digitToShow) {
+            TimeToSwitchDigits();
+            randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
+        }
+    }
+    UpdateAccuracy(accuracy);
 }
 
 Leap.loop(controllerOptions, function(frame) {
@@ -596,22 +645,6 @@ function Test() {
     CenterData();
     currentTestingSample = currentTestingSample.reshape(120).tolist();
     knnClassifier.classify(currentTestingSample, GotResults);
-}
-
-function GotResults(err, result) {
-    // Get total numPredictions and accuracy for that digits
-    numPredictions = num_prediction_dict[String(digitToShow)] + 1;
-    accuracy = acc_dict[String(digitToShow)];
-    accuracy = (((numPredictions - 1) * accuracy) + (result.label == digitToShow)) / numPredictions;
-    // Set new values for tht num in global dictionary
-    num_prediction_dict[String(digitToShow)] = numPredictions;
-    acc_dict[String(digitToShow)] = accuracy;
-    if (MATH_PROBLEMS) {
-        if (result.label == digitToShow) {
-            TimeToSwitchDigits();
-            randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
-        }
-    }
 }
 
 function CenterData() {
