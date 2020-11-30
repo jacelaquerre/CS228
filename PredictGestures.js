@@ -43,6 +43,8 @@ var mathHTMLCreated = false;
 const LEN_MATH_PROBLEM_LISTS = 2;
 var randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
 let username = "";
+var userList = [];
+var comparisonHTMLCreated = false;
 
 function SignIn() {
     username = document.getElementById('username').value;
@@ -52,7 +54,7 @@ function SignIn() {
     } else {
         CreateSignInItem(username, list);
     }
-    console.log(list.innerHTML);
+    ResetDictionaries();
     return false;
 }
 
@@ -74,45 +76,156 @@ function CreateNewUser(username, list) {
     list.appendChild(item);
     item = document.createElement('li');
     item.id = String(username) + "_signins";
-    item.innerHTML = 1;
+    item.setAttribute("value", "1");
+    item.innerHTML = "1";
     list.appendChild(item);
     // Create accuracy for numbers
     for (var i = 0; i < 10; ++i) {
         item = document.createElement('li');
         item.id = String(username) + String(i) + "_accuracy_curr";
-        item.innerHTML = 0;
+        item.innerHTML = "0";
+        item.setAttribute("value", "0");
         list.appendChild(item);
     }
+    // Add user to global list
+    userList.push(username);
 }
 
 function CreateSignInItem(username, list) {
-    let ID = String(username) + "_signins"
+    let ID = String(username) + "_signins";
     let listItem = document.getElementById(ID);
-    if (parseInt(listItem.innerHTML) === 1) {
+    if (listItem.getAttribute('value') === "1") {
         for (var i = 0; i < 10; ++i) {
             var item = document.createElement('li');
             item.id = String(username) + String(i) + "_accuracy_last";
-            let ID = String(username) + String(i) + "_accuracy_curr"
+            let ID = String(username) + String(i) + "_accuracy_curr";
             let listItem = document.getElementById(ID);
-            item.innerHTML = listItem.getAttribute('innerHTML');
+            item.innerHTML = listItem.getAttribute('value');
+            item.setAttribute("value", listItem.getAttribute('value'));
             list.appendChild(item);
+            listItem.innerHTML = "0";
+            listItem.setAttribute("value", "0");
         }
     } else {
-        for (var i = 0; i < 10; ++i) {
-            var ID2 = String(username) + String(i) + "_accuracy_curr"
+        for (i = 0; i < 10; ++i) {
+            var ID2 = String(username) + String(i) + "_accuracy_curr";
             let listItem2 = document.getElementById(ID2);
-            let ID3 = String(username) + String(i) + "_accuracy_last"
+            let ID3 = String(username) + String(i) + "_accuracy_last";
             let listItem3 = document.getElementById(ID3);
-            listItem3.innerHTML = listItem2.getAttribute('innerHTML');
+            listItem3.innerHTML = listItem2.getAttribute('value');
+            listItem3.setAttribute("value", String(parseInt(listItem2.getAttribute('value'))));
+            listItem3.innerHTML = "0";
+            listItem3.setAttribute("value", "0");
         }
     }
-    listItem.innerHTML = parseInt(listItem.innerHTML) + 1;
+    listItem.innerHTML = String(parseInt(listItem.innerHTML) + 1);
+    var sign_ins = (parseInt(listItem.getAttribute('value'))) + 1;
+    listItem.setAttribute("value", String(sign_ins));
+}
+
+function ResetDictionaries() {
+    acc_dict = { "0" : 0 ,
+        //"1" : 0 ,
+        "2" : 0 ,
+        "3" : 0 ,
+        "4" : 0 ,
+        "5" : 0 ,
+        //"6" : 0 ,
+        //"7" : 0 ,
+        //"8" : 0 ,
+        //"9" : 0
+    };
+
+    num_prediction_dict = { "0" : 0 ,
+        //"1" : 0 ,
+        "2" : 0 ,
+        "3" : 0 ,
+        "4" : 0 ,
+        "5" : 0 ,
+        //"6" : 0 ,
+        //"7" : 0 ,
+        //"8" : 0 ,
+        //"9" : 0
+    };
 }
 
 function UpdateAccuracy(accuracy) {
-    let ID = String(username) + String(digitToShow) + "_accuracy_curr"
-    let listItem = document.getElementById(ID);
+    var ID = String(username) + String(digitToShow) + "_accuracy_curr";
+    var listItem = document.getElementById(ID);
     listItem.innerHTML = String(accuracy);
+    listItem.setAttribute("value", String(accuracy));
+    if (!comparisonHTMLCreated) {
+        DisplaySessionComparisonHTML();
+        comparisonHTMLCreated = true;
+    }
+    ID = String(username) + "_signins";
+    listItem = document.getElementById(ID);
+    var sign_ins = listItem.getAttribute('value');
+    if (sign_ins > 1) {
+        ID = String(username) + String(digitToShow) + "_accuracy_last";
+        listItem = document.getElementById(ID);
+        let prev_accuracy = listItem.getAttribute('value');
+        let headerSting = "--- " + String(digitToShow) + " ---" + "<br>";
+        let currString = "-> " + String(accuracy) + "%" + "<br>";
+        let lastSting = "<- " + String(prev_accuracy) + "%" + "<br>";
+        if (prev_accuracy > accuracy) {
+            document.getElementById("curr").setAttribute("style", "color:red");
+            document.getElementById("last").setAttribute("style", "color:green");
+        } else if (prev_accuracy < accuracy) {
+            document.getElementById("curr").setAttribute("style", "color:green");
+            document.getElementById("last").setAttribute("style", "color:red");
+        } else {
+            document.getElementById("curr").setAttribute("style", "color:black");
+            document.getElementById("last").setAttribute("style", "color:black");
+        }
+        document.getElementById("header").innerHTML = headerSting;
+        document.getElementById("curr").innerHTML = currString;
+        document.getElementById("last").innerHTML = lastSting;
+    } else {
+        let headerSting = "--- " + String(digitToShow) + " ---" + "<br>";
+        let currString = "->" + String(accuracy) + "%" + "<br>";
+        document.getElementById("curr").setAttribute("style", "color:black");
+        document.getElementById("header").innerHTML = headerSting;
+        document.getElementById("curr").innerHTML = currString;
+    }
+}
+
+function DisplaySessionComparisonHTML() {
+    var sheet = document.createElement('style')
+    sheet.innerHTML = '.resultsContainer {\n' +
+        '        position: absolute;\n' +
+        '        bottom: '+ String((window.innerHeight / 2) - 250) + ';\n' +
+        '        left: '+ 150 + ';\n' +
+        '    }';
+    document.body.appendChild(sheet);
+    sheet = document.createElement('style')
+    sheet .innerHTML = '.bottomleft {\n' +
+        //'        position: absolute;\n' +
+        //'        bottom: '+ String((window.innerHeight / 2) + 400) + ';\n' +
+        //'        left: '+ 100 + ';\n' +
+        '        display: block;\n' +
+        '        font-size: 40px;\n' +
+        '    }';
+    document.body.appendChild(sheet);
+    var container = document.createElement('div');
+    container.classList.add("resultsContainer");
+    var header = document.createElement('div');
+    var curr = document.createElement('div');
+    var last = document.createElement('div');
+    var usersTable = document.createElement('ul');
+    header.classList.add("bottomleft");
+    header.id = "header";
+    curr.classList.add("bottomleft");
+    curr.id = "curr";
+    last.classList.add("bottomleft");
+    last.id = "last";
+    usersTable.classList.add("bottomleft");
+    usersTable.id = "usersTable"
+    container.appendChild(header);
+    container.appendChild(curr);
+    container.appendChild(last);
+    container.appendChild(usersTable);
+    document.body.appendChild(container);
 }
 
 function GotResults(err, result) {
@@ -180,7 +293,7 @@ function createMathHTML() {
              '        position: relative;\n' +
              '    }';
     document.body.appendChild(sheet);
-    sheet = document.createElement('style')
+    var sheet = document.createElement('style')
     sheet.innerHTML = '.bottomright {\n' +
              '        position: absolute;\n' +
              '        bottom: '+ String(window.innerHeight / 2) + ';\n' +
