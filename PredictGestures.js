@@ -161,12 +161,14 @@ function UpdateAccuracy(accuracy) {
     ID = String(username) + "_signins";
     listItem = document.getElementById(ID);
     var sign_ins = listItem.getAttribute('value');
+    let headerSting = "--- &#127919; ---" + "<br>";
     if (sign_ins > 1) {
         ID = String(username) + String(digitToShow) + "_accuracy_last";
         listItem = document.getElementById(ID);
-        let prev_accuracy = listItem.getAttribute('value');
-        let headerSting = "--- " + String(digitToShow) + " ---" + "<br>";
-        let currString = "-> " + String(accuracy) + "%" + "<br>";
+        var prev_accuracy = listItem.getAttribute('value');
+        prev_accuracy = (parseInt(prev_accuracy) * 100).toFixed(2);
+        var acc = (accuracy * 100).toFixed(2);
+        let currString = "-> " + String(acc) + "%" + "<br>";
         let lastSting = "<- " + String(prev_accuracy) + "%" + "<br>";
         if (prev_accuracy > accuracy) {
             document.getElementById("curr").setAttribute("style", "color:red");
@@ -182,19 +184,34 @@ function UpdateAccuracy(accuracy) {
         document.getElementById("curr").innerHTML = currString;
         document.getElementById("last").innerHTML = lastSting;
     } else {
-        let headerSting = "--- " + String(digitToShow) + " ---" + "<br>";
-        let currString = "->" + String(accuracy) + "%" + "<br>";
+        var acc = (accuracy * 100).toFixed(2);
+        let currString = "->" + String(acc) + "%" + "<br>";
         document.getElementById("curr").setAttribute("style", "color:black");
         document.getElementById("header").innerHTML = headerSting;
         document.getElementById("curr").innerHTML = currString;
     }
+    //var table = document.getElementById("usersTable");
+    var leaderboard = "--- &#128081; ---" + "<br>" + "\n";
+    for (var i = 0; i < userList.length; ++i) {
+        ID = userList[i] + String(digitToShow) + "_accuracy_curr";
+        listItem = document.getElementById(ID);
+        let acc = parseInt(listItem.getAttribute('value'));
+        // if (acc < 0 || acc == null) {
+        //     acc = 0;
+        // }
+        console.log(acc);
+        var accRound = (acc * 100).toFixed(2);
+        console.log(accRound);
+        leaderboard = leaderboard + userList[i] + " - " + String(accRound) + "%" + "<br>" + "\n";
+    }
+    document.getElementById("usersTable").innerHTML = leaderboard;
 }
 
 function DisplaySessionComparisonHTML() {
     var sheet = document.createElement('style')
     sheet.innerHTML = '.resultsContainer {\n' +
         '        position: absolute;\n' +
-        '        bottom: '+ String((window.innerHeight / 2) - 250) + ';\n' +
+        '        bottom: '+ String((window.innerHeight / 2) - 400) + ';\n' +
         '        left: '+ 150 + ';\n' +
         '    }';
     document.body.appendChild(sheet);
@@ -204,7 +221,7 @@ function DisplaySessionComparisonHTML() {
         //'        bottom: '+ String((window.innerHeight / 2) + 400) + ';\n' +
         //'        left: '+ 100 + ';\n' +
         '        display: block;\n' +
-        '        font-size: 40px;\n' +
+        '        font-size: 35px;\n' +
         '    }';
     document.body.appendChild(sheet);
     var container = document.createElement('div');
@@ -212,7 +229,7 @@ function DisplaySessionComparisonHTML() {
     var header = document.createElement('div');
     var curr = document.createElement('div');
     var last = document.createElement('div');
-    var usersTable = document.createElement('ul');
+    var usersTable = document.createElement('div');
     header.classList.add("bottomleft");
     header.id = "header";
     curr.classList.add("bottomleft");
