@@ -14,27 +14,27 @@ var timeSinceLastDigitChange = new Date();
 // We are creating a dictionary that will keep track of users accuracy for each digit
 // and the number of predictions for each digit
 var acc_dict = { "0" : 0 ,
-    //"1" : 0 ,
+    "1" : 0 ,
     "2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
-    //"6" : 0 ,
-    //"7" : 0 ,
-    //"8" : 0 ,
-    //"9" : 0
+    "6" : 0 ,
+    "7" : 0 ,
+    "8" : 0 ,
+    "9" : 0
 };
 
 var num_prediction_dict = { "0" : 0 ,
-    //"1" : 0 ,
+    "1" : 0 ,
     "2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
-    //"6" : 0 ,
-    //"7" : 0 ,
-    //"8" : 0 ,
-    //"9" : 0
+    "6" : 0 ,
+    "7" : 0 ,
+    "8" : 0 ,
+    "9" : 0
 };
 const PROFICIENT_ACCURACY = .70;
 const SHORTER_TIME_ACCURACY = .90;
@@ -187,6 +187,7 @@ function UpdateAccuracy(accuracy) {
         var acc = (accuracy * 100).toFixed(2);
         let currString = "->" + String(acc) + "%" + "<br>";
         document.getElementById("curr").setAttribute("style", "color:black");
+        document.getElementById("last").setAttribute("style", "color:white");
         document.getElementById("header").innerHTML = headerSting;
         document.getElementById("curr").innerHTML = currString;
     }
@@ -194,14 +195,9 @@ function UpdateAccuracy(accuracy) {
     var leaderboard = "--- &#128081; ---" + "<br>" + "\n";
     for (var i = 0; i < userList.length; ++i) {
         ID = userList[i] + String(digitToShow) + "_accuracy_curr";
-        listItem = document.getElementById(ID);
-        let acc = parseInt(listItem.getAttribute('value'));
-        // if (acc < 0 || acc == null) {
-        //     acc = 0;
-        // }
-        console.log(acc);
-        var accRound = (acc * 100).toFixed(2);
-        console.log(accRound);
+        var element = document.getElementById(ID);
+        var acc2 = element.getAttribute('value');
+        var accRound = (acc2 * 100).toFixed(2);
         leaderboard = leaderboard + userList[i] + " - " + String(accRound) + "%" + "<br>" + "\n";
     }
     document.getElementById("usersTable").innerHTML = leaderboard;
