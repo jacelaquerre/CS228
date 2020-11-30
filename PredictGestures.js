@@ -14,27 +14,27 @@ var timeSinceLastDigitChange = new Date();
 // We are creating a dictionary that will keep track of users accuracy for each digit
 // and the number of predictions for each digit
 var acc_dict = { "0" : 0 ,
-    "1" : 0 ,
+    //"1" : 0 ,
     "2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
-    "6" : 0 ,
-    "7" : 0 ,
-    "8" : 0 ,
-    "9" : 0
+    //"6" : 0 ,
+    //"7" : 0 ,
+    //"8" : 0 ,
+    //"9" : 0
 };
 
 var num_prediction_dict = { "0" : 0 ,
-    "1" : 0 ,
+    //"1" : 0 ,
     "2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
-    "6" : 0 ,
-    "7" : 0 ,
-    "8" : 0 ,
-    "9" : 0
+    //"6" : 0 ,
+    //"7" : 0 ,
+    //"8" : 0 ,
+    //"9" : 0
 };
 const PROFICIENT_ACCURACY = .70;
 const SHORTER_TIME_ACCURACY = .90;
@@ -113,9 +113,9 @@ function CreateSignInItem(username, list) {
             let ID3 = String(username) + String(i) + "_accuracy_last";
             let listItem3 = document.getElementById(ID3);
             listItem3.innerHTML = listItem2.getAttribute('value');
-            listItem3.setAttribute("value", String(parseInt(listItem2.getAttribute('value'))));
-            listItem3.innerHTML = "0";
-            listItem3.setAttribute("value", "0");
+            listItem3.setAttribute("value", String(listItem2.getAttribute('value')));
+            listItem2.innerHTML = "0";
+            listItem2.setAttribute("value", "0");
         }
     }
     listItem.innerHTML = String(parseInt(listItem.innerHTML) + 1);
@@ -125,27 +125,27 @@ function CreateSignInItem(username, list) {
 
 function ResetDictionaries() {
     acc_dict = { "0" : 0 ,
-        "1" : 0 ,
+        //"1" : 0 ,
         "2" : 0 ,
         "3" : 0 ,
         "4" : 0 ,
         "5" : 0 ,
-        "6" : 0 ,
-        "7" : 0 ,
-        "8" : 0 ,
-        "9" : 0
+        //"6" : 0 ,
+        //"7" : 0 ,
+        //"8" : 0 ,
+        //"9" : 0
     };
 
     num_prediction_dict = { "0" : 0 ,
-        "1" : 0 ,
+        //"1" : 0 ,
         "2" : 0 ,
         "3" : 0 ,
         "4" : 0 ,
         "5" : 0 ,
-        "6" : 0 ,
-        "7" : 0 ,
-        "8" : 0 ,
-        "9" : 0
+        //"6" : 0 ,
+        //"7" : 0 ,
+        //"8" : 0 ,
+        //"9" : 0
     };
 }
 
@@ -166,10 +166,10 @@ function UpdateAccuracy(accuracy) {
         ID = String(username) + String(digitToShow) + "_accuracy_last";
         listItem = document.getElementById(ID);
         var prev_accuracy = listItem.getAttribute('value');
-        prev_accuracy = (parseInt(prev_accuracy) * 100).toFixed(2);
+        var prev_accuracyRounded = (prev_accuracy * 100).toFixed(2);
         var acc = (accuracy * 100).toFixed(2);
         let currString = "-> " + String(acc) + "%" + "<br>";
-        let lastSting = "<- " + String(prev_accuracy) + "%" + "<br>";
+        let lastSting = "<- " + String(prev_accuracyRounded) + "%" + "<br>";
         if (prev_accuracy > accuracy) {
             document.getElementById("curr").setAttribute("style", "color:red");
             document.getElementById("last").setAttribute("style", "color:green");
@@ -191,7 +191,6 @@ function UpdateAccuracy(accuracy) {
         document.getElementById("header").innerHTML = headerSting;
         document.getElementById("curr").innerHTML = currString;
     }
-    //var table = document.getElementById("usersTable");
     var leaderboard = "--- &#128081; ---" + "<br>" + "\n";
     for (var i = 0; i < userList.length; ++i) {
         ID = userList[i] + String(digitToShow) + "_accuracy_curr";
