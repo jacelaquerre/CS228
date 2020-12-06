@@ -13,9 +13,9 @@ var programState = 0;
 var timeSinceLastDigitChange = new Date();
 // We are creating a dictionary that will keep track of users accuracy for each digit
 // and the number of predictions for each digit
-var acc_dict = { "0" : 0 ,
+var acc_dict = { //"0" : 0 ,
     //"1" : 0 ,
-    "2" : 0 ,
+    //"2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
@@ -25,9 +25,21 @@ var acc_dict = { "0" : 0 ,
     //"9" : 0
 };
 
-var num_prediction_dict = { "0" : 0 ,
+var num_prediction_dict = { //"0" : 0 ,
     //"1" : 0 ,
-    "2" : 0 ,
+    //"2" : 0 ,
+    "3" : 0 ,
+    "4" : 0 ,
+    "5" : 0 ,
+    //"6" : 0 ,
+    //"7" : 0 ,
+    //"8" : 0 ,
+    //"9" : 0
+};
+
+var digit_shown_dict = { //"0" : 0 ,
+    //"1" : 0 ,
+    //"2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
@@ -38,7 +50,8 @@ var num_prediction_dict = { "0" : 0 ,
 };
 const PROFICIENT_ACCURACY = .70;
 const SHORTER_TIME_ACCURACY = .90;
-const MATH_PROBLEMS = false;
+const ITERATIONS_UNTIL_MATH_SWITCH = 2;
+var math_problems = false;
 var mathHTMLCreated = false;
 const LEN_MATH_PROBLEM_LISTS = 2;
 var randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
@@ -124,9 +137,9 @@ function CreateSignInItem(username, list) {
 }
 
 function ResetDictionaries() {
-    acc_dict = { "0" : 0 ,
+    acc_dict = { //"0" : 0 ,
         //"1" : 0 ,
-        "2" : 0 ,
+        //"2" : 0 ,
         "3" : 0 ,
         "4" : 0 ,
         "5" : 0 ,
@@ -136,9 +149,21 @@ function ResetDictionaries() {
         //"9" : 0
     };
 
-    num_prediction_dict = { "0" : 0 ,
+    num_prediction_dict = { //"0" : 0 ,
         //"1" : 0 ,
-        "2" : 0 ,
+        //"2" : 0 ,
+        "3" : 0 ,
+        "4" : 0 ,
+        "5" : 0 ,
+        //"6" : 0 ,
+        //"7" : 0 ,
+        //"8" : 0 ,
+        //"9" : 0
+    };
+
+    digit_shown_dict = { //"0" : 0 ,
+        //"1" : 0 ,
+        //"2" : 0 ,
         "3" : 0 ,
         "4" : 0 ,
         "5" : 0 ,
@@ -184,7 +209,7 @@ function UpdateAccuracy(accuracy) {
         document.getElementById("curr").innerHTML = currString;
         document.getElementById("last").innerHTML = lastSting;
     } else {
-        var acc = (accuracy * 100).toFixed(2);
+        acc = (accuracy * 100).toFixed(2);
         let currString = "->" + String(acc) + "%" + "<br>";
         document.getElementById("curr").setAttribute("style", "color:black");
         document.getElementById("last").setAttribute("style", "color:white");
@@ -248,12 +273,12 @@ function GotResults(err, result) {
     // Set new values for tht num in global dictionary
     num_prediction_dict[String(digitToShow)] = numPredictions;
     acc_dict[String(digitToShow)] = accuracy;
-    if (MATH_PROBLEMS) {
-        if (result.label == digitToShow) {
-            TimeToSwitchDigits();
-            randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
-        }
-    }
+    // if (math_problems) {
+    //     if (result.label == digitToShow) {
+    //         TimeToSwitchDigits();
+    //         randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
+    //     }
+    // }
     UpdateAccuracy(accuracy);
 }
 
@@ -323,9 +348,12 @@ function createMathHTML() {
 }
 
 function DrawLowerRightPanel() {
-    var digitAccuracy = acc_dict[String(digitToShow)];
     var mathProblem = "";
-    if (MATH_PROBLEMS) {
+    if (mathHTMLCreated) {
+        document.getElementById("math").innerHTML = "";
+    }
+    var digitAccuracy = acc_dict[String(digitToShow)];
+    if (math_problems) {
         if (!mathHTMLCreated) {
             createMathHTML();
             mathHTMLCreated = true;
@@ -429,13 +457,13 @@ function DrawLowerRightPanel() {
 }
 
 function DetermineWhetherToSwitchDigits() {
-    if (MATH_PROBLEMS) {
+    //if (math_problems) {
+    //   SwitchDigits();
+    //} else {
+    if (TimeToSwitchDigits()) {
         SwitchDigits();
-    } else {
-        if (TimeToSwitchDigits()) {
-            SwitchDigits();
-        }
     }
+    //}
 }
 
 function TimeToSwitchDigits() {
@@ -462,20 +490,41 @@ function TimeToSwitchDigits() {
 }
 
 function SwitchDigits() {
-    // The next number to do will be the one with the worst accuracy
-    var accuracyArray = [];
-    var ct = 0;
-    for (var key in acc_dict) {
-        accuracyArray[ct] = acc_dict[key];
-        ++ct;
-    }
-    worstAccuracy = Math.min.apply(Math, accuracyArray);
-    for (key in acc_dict) {
-        if (acc_dict[key] <= worstAccuracy) {
+    digit_shown_dict[String(digitToShow)] = digit_shown_dict[String(digitToShow)] + 1;
+    console.log(digit_shown_dict);
+    //if (math_problems) {
+    var leastVisited = 9999;
+    math_problems = false;
+    for (var key in digit_shown_dict) {
+        if (digit_shown_dict[key] <= leastVisited) {
+            leastVisited = digit_shown_dict[key]
             digitToShow = parseInt(key);
-            break;
         }
     }
+    var digitAccuracy = acc_dict[String(digitToShow)];
+    console.log(digit_shown_dict[String(digitToShow)]);
+    console.log(digitAccuracy);
+    if ((digit_shown_dict[String(digitToShow)] >= ITERATIONS_UNTIL_MATH_SWITCH) &&
+        digitAccuracy >= PROFICIENT_ACCURACY) {
+        math_problems = true;
+        randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
+    }
+    // } else {
+    //     // The next number to do will be the one with the worst accuracy
+    //     var accuracyArray = [];
+    //     var ct = 0;
+    //     for (key in acc_dict) {
+    //         accuracyArray[ct] = acc_dict[key];
+    //         ++ct;
+    //     }
+    //     worstAccuracy = Math.min.apply(Math, accuracyArray);
+    //     for (key in acc_dict) {
+    //         if (acc_dict[key] <= worstAccuracy) {
+    //             digitToShow = parseInt(key);
+    //             break;
+    //         }
+    //     }
+    // }
 }
 
 function DetermineState(frame) {
