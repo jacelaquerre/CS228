@@ -1,11 +1,9 @@
 const knnClassifier = ml5.KNNClassifier();
-let numSamples = train6Bongard.shape[0];
 var controllerOptions = {};
 var trainingCompleted = false;
 var oneFrameOfData = nj.zeros([5, 4, 6]);
 var numPredictions = 0;
 var accuracy = 0;
-var worstAccuracy = 0;
 //0 = the program is waiting to see the user’s hand.
 //1 = the user’s hand is present but not centered.
 //2 = the user’s hand is present and centered.
@@ -13,47 +11,51 @@ var programState = 0;
 var timeSinceLastDigitChange = new Date();
 // We are creating a dictionary that will keep track of users accuracy for each digit
 // and the number of predictions for each digit
-var acc_dict = { //"0" : 0 ,
-    //"1" : 0 ,
-    //"2" : 0 ,
+var acc_dict = { "0" : 0 ,
+    "1" : 0 ,
+    "2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
-    //"6" : 0 ,
-    //"7" : 0 ,
-    //"8" : 0 ,
-    //"9" : 0
+    "6" : 0 ,
+    "7" : 0 ,
+    "8" : 0 ,
+    "9" : 0
 };
 
-var num_prediction_dict = { //"0" : 0 ,
-    //"1" : 0 ,
-    //"2" : 0 ,
+var num_prediction_dict = { "0" : 0 ,
+    "1" : 0 ,
+    "2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
-    //"6" : 0 ,
-    //"7" : 0 ,
-    //"8" : 0 ,
-    //"9" : 0
+    "6" : 0 ,
+    "7" : 0 ,
+    "8" : 0 ,
+    "9" : 0
 };
 
-var digit_shown_dict = { //"0" : 0 ,
-    //"1" : 0 ,
-    //"2" : 0 ,
+var digit_shown_dict = { "0" : 0 ,
+    "1" : 0 ,
+    "2" : 0 ,
     "3" : 0 ,
     "4" : 0 ,
     "5" : 0 ,
-    //"6" : 0 ,
-    //"7" : 0 ,
-    //"8" : 0 ,
-    //"9" : 0
+    "6" : 0 ,
+    "7" : 0 ,
+    "8" : 0 ,
+    "9" : 0
 };
+// Program constants that can be changed to preference
 const PROFICIENT_ACCURACY = .70;
 const SHORTER_TIME_ACCURACY = .90;
 const ITERATIONS_UNTIL_MATH_SWITCH = 2;
+const LEN_MATH_PROBLEM_LISTS = 2;
+const LONG_TIME = 6;
+const SHORT_TIME = 3;
+
 var math_problems = false;
 var mathHTMLCreated = false;
-const LEN_MATH_PROBLEM_LISTS = 2;
 var randomMathProblemIdx = Math.floor(Math.random() * LEN_MATH_PROBLEM_LISTS);
 let username = "";
 var userList = [];
@@ -137,40 +139,40 @@ function CreateSignInItem(username, list) {
 }
 
 function ResetDictionaries() {
-    acc_dict = { //"0" : 0 ,
-        //"1" : 0 ,
-        //"2" : 0 ,
+    acc_dict = { "0" : 0 ,
+        "1" : 0 ,
+        "2" : 0 ,
         "3" : 0 ,
         "4" : 0 ,
         "5" : 0 ,
-        //"6" : 0 ,
-        //"7" : 0 ,
-        //"8" : 0 ,
-        //"9" : 0
+        "6" : 0 ,
+        "7" : 0 ,
+        "8" : 0 ,
+        "9" : 0
     };
 
-    num_prediction_dict = { //"0" : 0 ,
-        //"1" : 0 ,
-        //"2" : 0 ,
+    num_prediction_dict = { "0" : 0 ,
+        "1" : 0 ,
+        "2" : 0 ,
         "3" : 0 ,
         "4" : 0 ,
         "5" : 0 ,
-        //"6" : 0 ,
-        //"7" : 0 ,
-        //"8" : 0 ,
-        //"9" : 0
+        "6" : 0 ,
+        "7" : 0 ,
+        "8" : 0 ,
+        "9" : 0
     };
 
-    digit_shown_dict = { //"0" : 0 ,
-        //"1" : 0 ,
-        //"2" : 0 ,
+    digit_shown_dict = { "0" : 0 ,
+        "1" : 0 ,
+        "2" : 0 ,
         "3" : 0 ,
         "4" : 0 ,
         "5" : 0 ,
-        //"6" : 0 ,
-        //"7" : 0 ,
-        //"8" : 0 ,
-        //"9" : 0
+        "6" : 0 ,
+        "7" : 0 ,
+        "8" : 0 ,
+        "9" : 0
     };
 }
 
@@ -467,8 +469,6 @@ function DetermineWhetherToSwitchDigits() {
 }
 
 function TimeToSwitchDigits() {
-    const SHORT_TIME = 3;
-    const LONG_TIME = 6;
     let currentTime = new Date();
     let timeInBetweenInMilliseconds = currentTime - timeSinceLastDigitChange;
     let timeInBetweenInSeconds = timeInBetweenInMilliseconds / 1000;
